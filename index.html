@@ -1004,6 +1004,17 @@ body::after {
   display: grid;
   gap: 12px;
 }
+.week-block-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 8px 10px;
+  margin-top: 6px;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
 .week-list-day-empty,
 .todo-empty,
 .routine-empty {
@@ -1534,6 +1545,13 @@ body::after {
     events: [],
     cursor: { year: new Date().getFullYear(), month: new Date().getMonth() + 1 }
   };
+  const WeekFeedState = {
+    startOffset: 0,
+    endOffset: 3,
+    batchSize: 4,
+    shouldResetScroll: true,
+    isUpdating: false
+  };
   const TodoState = { todos: [] };
   const RoutineState = { routines: [] };
   const PrayerState = { prayers: [] };
@@ -1678,6 +1696,12 @@ body::after {
     if(!year || !month || !day) return iso;
     return `${month}월 ${day}일`;
   }
+  function formatWeekRangeLabel(startISO) {
+    const start = fromISO(startISO);
+    const end = fromISO(startISO);
+    end.setDate(end.getDate() + 6);
+    return `${start.getMonth()+1}월 ${start.getDate()}일 - ${end.getMonth()+1}월 ${end.getDate()}일`;
+  }
   function formatEventRange(ev) {
     const occurrence = ev._occurrence || { start: getEventStartISO(ev), end: getEventEndISO(ev) };
     const start = occurrence.start;
@@ -1704,10 +1728,16 @@ body::after {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2000);
   }
+  function resetWeekFeed(resetScroll = true) {
+    WeekFeedState.startOffset = 0;
+    WeekFeedState.endOffset = 3;
+    WeekFeedState.shouldResetScroll = resetScroll;
+  }
   function moveWeek(delta) {
     const d = new Date(State.weekAnchor);
     d.setDate(d.getDate() + delta * 7);
     State.weekAnchor = toISO(d);
+    resetWeekFeed(true);
     renderCurrentView();
   }
   function moveCursor(delta) {
@@ -1895,36 +1925,101 @@ body::after {
     renderWeekEvents();
   }
 
+  function appendWeekDayEvents(container, iso, d) {
+    const evs = getEventsForDate(iso);
+
+    const hdr = document.createElement('div');
+    hdr.className = `week-list-day-hdr ${iso===toISO(new Date())?'is-today':''} ${d.getDay()===0?'is-sun':''} ${d.getDay()===6?'is-sat':''}`;
+    hdr.innerHTML = `<span class="wldh-num">${d.getDate()}</span><span class="wldh-dow">${['일','월','화','수','목','금','토'][d.getDay()]}</span>`;
+    if(iso === toISO(new Date())) hdr.innerHTML += `<span class="wldh-today-badge">오늘</span>`;
+    hdr.onclick = () => { State.selected = iso; switchScreen('day'); };
+    container.appendChild(hdr);
+
+    const list = document.createElement('div');
+    list.className = 'week-list-day-events';
+    if(evs.length === 0) {
+      list.innerHTML = `<div class="week-list-day-empty">일정 없음</div>`;
+    } else {
+      evs.forEach(e => {
+        const item = document.createElement('div');
+        item.className = 'todo-item';
+        item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div><div class="todo-body"><div class="event-chip-row"><span class="event-chip event-chip-${e.color||'gold'}">${getEventBadgeLabel(e)}</span></div><div class="todo-title">${e.title}</div><div class="todo-meta">${formatEventMeta(e)}</div></div>`;
+        item.onclick = ev => { ev.stopPropagation(); openEventModal(e); };
+        list.appendChild(item);
+      });
+    }
+    container.appendChild(list);
+  }
+
   function renderWeekEvents() {
+    const wrapEl = $('week-events-wrap');
     const wrap = $('week-events-inner');
+    if(!wrap || !wrapEl) return;
+
+    const previousScrollTop = wrapEl.scrollTop;
+    const previousScrollHeight = wrapEl.scrollHeight;
+    const resetScroll = WeekFeedState.shouldResetScroll;
     wrap.innerHTML = '';
-    const start = new Date(State.weekAnchor);
-    for(let i = 0; i < 7; i++) {
-      const d = new Date(start); d.setDate(d.getDate() + i);
-      const iso = toISO(d);
-      const evs = getEventsForDate(iso);
+    const anchor = fromISO(State.weekAnchor);
 
-      const hdr = document.createElement('div');
-      hdr.className = `week-list-day-hdr ${iso===toISO(new Date())?'is-today':''} ${d.getDay()===0?'is-sun':''} ${d.getDay()===6?'is-sat':''}`;
-      hdr.innerHTML = `<span class="wldh-num">${d.getDate()}</span><span class="wldh-dow">${['일','월','화','수','목','금','토'][d.getDay()]}</span>`;
-      if(iso === toISO(new Date())) hdr.innerHTML += `<span class="wldh-today-badge">오늘</span>`;
-      hdr.onclick = () => { State.selected = iso; switchScreen('day'); };
-      wrap.appendChild(hdr);
+    for(let weekOffset = WeekFeedState.startOffset; weekOffset <= WeekFeedState.endOffset; weekOffset++) {
+      const weekStart = new Date(anchor);
+      weekStart.setDate(weekStart.getDate() + weekOffset * 7);
+      const weekStartISO = toISO(weekStart);
 
-      const list = document.createElement('div');
-      list.className = 'week-list-day-events';
-      if(evs.length === 0) {
-        list.innerHTML = `<div class="week-list-day-empty">일정 없음</div>`;
-      } else {
-        evs.forEach(e => {
-          const item = document.createElement('div');
-          item.className = 'todo-item';
-          item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div><div class="todo-body"><div class="event-chip-row"><span class="event-chip event-chip-${e.color||'gold'}">${getEventBadgeLabel(e)}</span></div><div class="todo-title">${e.title}</div><div class="todo-meta">${formatEventMeta(e)}</div></div>`;
-          item.onclick = ev => { ev.stopPropagation(); openEventModal(e); };
-          list.appendChild(item);
-        });
+      const sectionLabel = document.createElement('div');
+      sectionLabel.className = 'week-block-label';
+      sectionLabel.textContent = formatWeekRangeLabel(weekStartISO);
+      wrap.appendChild(sectionLabel);
+
+      for(let dayOffset = 0; dayOffset < 7; dayOffset++) {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + dayOffset);
+        const iso = toISO(d);
+        appendWeekDayEvents(wrap, iso, d);
       }
-      wrap.appendChild(list);
+    }
+
+    if(resetScroll) {
+      wrapEl.scrollTop = 0;
+      WeekFeedState.shouldResetScroll = false;
+      WeekFeedState.isUpdating = false;
+      return;
+    }
+
+    if(WeekFeedState.isUpdating === 'prepend') {
+      wrapEl.scrollTop = previousScrollTop + (wrapEl.scrollHeight - previousScrollHeight);
+    } else {
+      wrapEl.scrollTop = previousScrollTop;
+    }
+    WeekFeedState.isUpdating = false;
+  }
+
+  function extendWeekFeed(direction) {
+    if(WeekFeedState.isUpdating) return;
+    if(direction === 'next') {
+      WeekFeedState.isUpdating = 'append';
+      WeekFeedState.endOffset += WeekFeedState.batchSize;
+    } else {
+      WeekFeedState.isUpdating = 'prepend';
+      WeekFeedState.startOffset -= WeekFeedState.batchSize;
+    }
+    renderWeekEvents();
+  }
+
+  function handleWeekFeedScroll() {
+    if(State.view !== 'week') return;
+    const wrap = $('week-events-wrap');
+    if(!wrap || WeekFeedState.isUpdating) return;
+
+    if(wrap.scrollTop < 180) {
+      extendWeekFeed('prev');
+      return;
+    }
+
+    const remaining = wrap.scrollHeight - wrap.clientHeight - wrap.scrollTop;
+    if(remaining < 260) {
+      extendWeekFeed('next');
     }
   }
 
@@ -2476,6 +2571,7 @@ body::after {
   $('btn-week-today').onclick      = () => {
     State.weekAnchor = getWeekStart(new Date());
     State.selected   = toISO(new Date());
+    resetWeekFeed(true);
     renderCurrentView();
   };
 
@@ -2552,10 +2648,13 @@ body::after {
 
   // Swipe: week events wrap
   const weekWrap = $('week-events-wrap');
-  if(weekWrap) initSwipe(weekWrap,
-    () => moveWeek(1),
-    () => moveWeek(-1)
-  );
+  if(weekWrap) {
+    initSwipe(weekWrap,
+      () => moveWeek(1),
+      () => moveWeek(-1)
+    );
+    weekWrap.addEventListener('scroll', handleWeekFeedScroll, { passive: true });
+  }
   // Swipe: month cal grid
   const calGrid = $('cal-grid');
   if(calGrid) initSwipe(calGrid,
