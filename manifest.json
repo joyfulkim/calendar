@@ -1,0 +1,25 @@
+{
+  "name": "Joyful Calendar",
+  "short_name": "캘린더",
+  "description": "나만의 모바일 일정관리 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#11111a",
+  "theme_color": "#11111a",
+  "orientation": "portrait-primary",
+  "lang": "ko",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
