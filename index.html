@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="캘린더">
-<meta name="theme-color" content="#11111a">
+<meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Joyful Calendar">
 <meta property="og:description" content="나만의 모바일 일정관리 앱">
@@ -29,27 +29,27 @@
 <style>
 /* ─── TOKENS ─────────────────────────────────────── */
 :root {
-  --surface-0: #09090b;
-  --surface-1: #111116;
-  --surface-2: #1b1b22;
-  --surface-3: #252530;
-  --surface-border: #2a2a35;
+  --surface-0: #f6f8fb;
+  --surface-1: #ffffff;
+  --surface-2: #eef2f7;
+  --surface-3: #e1e8f0;
+  --surface-border: #d2dae5;
 
-  --accent: #e8c547;
-  --accent-dim: #b89c35;
-  --accent-glow: rgba(232,197,71,0.14);
+  --accent: #d6a11f;
+  --accent-dim: #b48312;
+  --accent-glow: rgba(214,161,31,0.22);
 
   --label-rose:   #e05c6a;
-  --label-amber:  #e8943a;
+  --label-amber:  #d98420;
   --label-jade:   #3aad7c;
-  --label-indigo: #6a7fe8;
-  --label-slate:  #8899aa;
-  --label-gold:   #e8c547;
+  --label-indigo: #5870da;
+  --label-slate:  #6f8195;
+  --label-gold:   #d6a11f;
 
-  --text-1: #f0eff4;
-  --text-2: #8888a0;
-  --text-3: #44445a;
-  --text-inv: #09090b;
+  --text-1: #18212f;
+  --text-2: #556274;
+  --text-3: #8a95a5;
+  --text-inv: #18212f;
 
   --font: 'Pretendard', 'Apple SD Gothic Neo', system-ui, -apple-system, sans-serif;
 
@@ -97,7 +97,7 @@ input, textarea { font-family: inherit; }
   justify-content: space-between;
   padding-left: 8px;
   padding-right: 8px;
-  background: rgba(17, 17, 22, 0.8);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--surface-border);
@@ -209,7 +209,7 @@ input, textarea { font-family: inherit; }
     bottom: 0;
     left: 0;
     border-right: 1px solid var(--surface-border);
-    box-shadow: 18px 0 36px rgba(0, 0, 0, 0.28);
+    box-shadow: 18px 0 36px rgba(23, 33, 48, 0.12);
   }
 }
 
@@ -272,7 +272,7 @@ input, textarea { font-family: inherit; }
   max-width: 480px;
   height: calc(var(--nav-h) + var(--safe-b));
   padding-bottom: var(--safe-b);
-  background: rgba(17,17,22,0.93);
+  background: rgba(250,251,253,0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--surface-border);
@@ -450,6 +450,7 @@ input, textarea { font-family: inherit; }
   grid-template-columns: repeat(7, 1fr);
   padding: 10px 4px 6px;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--surface-border);
 }
 .weekday {
   text-align: center;
@@ -469,7 +470,8 @@ input, textarea { font-family: inherit; }
   padding: 0 4px;
   flex: 1;
   overflow: hidden;
-  gap: 2px;
+  gap: 4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(238,242,247,0.72));
 }
 .cal-cell {
   display: flex;
@@ -477,19 +479,22 @@ input, textarea { font-family: inherit; }
   align-items: center;
   padding: 4px 2px;
   border-radius: var(--r-sm);
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
   position: relative;
   min-height: 0;
   overflow: hidden;
   cursor: pointer;
-  transition: background 120ms;
+  transition: background 120ms, border-color 120ms, box-shadow 120ms;
   -webkit-tap-highlight-color: transparent;
 }
-.cal-cell:active { background: var(--surface-3); }
+.cal-cell:active { background: var(--surface-2); }
 .cal-cell.other-month .day-num { color: var(--text-3); opacity: 0.5; }
 .cal-cell.selected {
   background: var(--surface-2);
-  outline: 1.5px solid var(--accent);
-  outline-offset: -1.5px;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(214,161,31,0.18), inset 0 1px 0 rgba(255,255,255,0.7);
 }
 .day-num {
   width: 28px; height: 28px;
@@ -569,7 +574,7 @@ input, textarea { font-family: inherit; }
   .routine-time-badge { font-size: 12px; background: rgba(106,127,232,0.15); color: var(--label-indigo); padding: 4px 6px; border-radius: 4px; font-weight: 700; white-space: nowrap; margin-left: 6px; }
   .routine-empty { padding: 40px 20px; font-size: 15px; color: var(--text-3); text-align: center; grid-column: 1 / -1; }
   .routine-time-input { background: var(--surface-1); border: 1px solid var(--surface-border); border-radius: var(--r-sm); padding: 12px 8px; font-size: 15px; color: var(--text-1); outline: none; width: 110px; }
-  .btn-noti { background: rgba(255,255,255,0.1); border:none; padding:4px 8px; border-radius: 4px; color: #fff; font-size: 12px; cursor: pointer; display: none; }
+  .btn-noti { background: var(--surface-2); border:1px solid var(--surface-border); padding:4px 8px; border-radius: 4px; color: var(--text-1); font-size: 12px; cursor: pointer; display: none; }
   .btn-noti.visible { display: inline-block; }
 
   /* ─── PRAYER SCREEN ──────────────────────────────── */
@@ -579,7 +584,7 @@ input, textarea { font-family: inherit; }
   .prayer-select { width: 90px; background: var(--surface-1); border: 1px solid var(--surface-border); border-radius: var(--r-sm); padding: 12px 6px; font-size: 14px; color: var(--text-1); outline: none; cursor: pointer; }
   .prayer-tab-row { display: flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: var(--r-sm); margin-top: 12px; }
   .prayer-tab { flex: 1; padding: 10px; font-size: 14px; font-weight: 600; color: var(--text-3); background: transparent; border: none; border-radius: calc(var(--r-sm) - 2px); cursor: pointer; transition: 150ms; }
-  .prayer-tab.active { background: var(--surface-1); color: var(--text-1); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .prayer-tab.active { background: var(--surface-1); color: var(--text-1); box-shadow: 0 4px 14px rgba(23,33,48,0.08); }
   .prayer-list-wrap { padding: 16px 20px 80px; overflow-y: auto; flex: 1; }
   .prayer-item { background: var(--surface-1); border: 1px solid var(--surface-border); border-radius: var(--r-md); padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; }
   .prayer-cat { align-self: flex-start; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: var(--surface-3); color: var(--text-2); }
@@ -603,8 +608,8 @@ input, textarea { font-family: inherit; }
 
 /* date/time input dark fix */
 input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
-input[type="date"], input[type="time"] { color-scheme: dark; }
+input[type="time"]::-webkit-calendar-picker-indicator { filter: none; cursor: pointer; }
+input[type="date"], input[type="time"] { color-scheme: light; }
 
 /* ─── LOGIN SCREEN ───────────────────────────────── */
 #login-screen {
@@ -664,10 +669,11 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   padding: 12px 24px; border-radius: var(--r-pill);
   font-weight: 700; font-size: 15px; outline: none;
   transition: transform 120ms, box-shadow 120ms;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px rgba(23,33,48,0.08);
+  border: 1px solid var(--surface-border);
   -webkit-tap-highlight-color: transparent;
 }
-.google-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.google-btn:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(23,33,48,0.12); }
 
 /* 로그인 유지 체크박스 */
 .login-persist {
@@ -734,7 +740,7 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   background: var(--surface-2);
   border: 1px solid var(--surface-border);
   border-radius: var(--r-md);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 16px 40px rgba(23,33,48,0.12);
   z-index: 1200;
   overflow: hidden;
   opacity: 1;
@@ -828,7 +834,7 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   .sb-todo-empty { padding: 30px 16px; font-size: 12px; color: var(--text-3); text-align: center; }
   .sb-banner-section { flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 16px; border-top: 1px solid var(--surface-border); }
   .sb-banner-link { display: block; width: 100%; border-radius: var(--r-sm); overflow: hidden; position: relative; background: var(--surface-2); border: 1px solid var(--surface-border); transition: transform 120ms, box-shadow 120ms; text-decoration: none; }
-  .sb-banner-link:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
+  .sb-banner-link:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(23,33,48,0.12); }
   .sb-banner-img { width: 100%; height: auto; display: block; object-fit: contain; }
 }
 
@@ -839,6 +845,394 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
 .gib-text { flex: 1; line-height: 1.4; margin-right: 12px; }
 .gib-copy-btn { background: rgba(255,255,255,0.25); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap; border: 1.5px solid #fff; cursor: pointer; }
 .gib-copy-btn:active { background: #fff; color: #ff9800; }
+
+/* ─── STITCH POLISH ────────────────────────────── */
+body {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 169, 187, 0.34), transparent 24%),
+    radial-gradient(circle at 92% 6%, rgba(123, 214, 255, 0.32), transparent 24%),
+    radial-gradient(circle at 16% 92%, rgba(255, 220, 117, 0.24), transparent 20%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 45%, #eef5ff 100%);
+}
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  filter: blur(46px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+}
+body::before {
+  top: 8%;
+  right: -56px;
+  background: rgba(130, 214, 255, 0.42);
+}
+body::after {
+  left: -64px;
+  bottom: 10%;
+  background: rgba(255, 210, 104, 0.38);
+}
+#app,
+#login-screen,
+#app-header,
+#pc-sidebar,
+#modal-event,
+#global-in-app-banner {
+  z-index: 1;
+}
+#app-header {
+  background: transparent;
+  border-bottom: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.app-hdr-btn,
+.hdr-refresh-btn,
+.header-back,
+.nav-btn,
+.week-nav-arrow,
+.sb-nav-btn {
+  background: rgba(255,255,255,0.78);
+  border: 1px solid rgba(210, 218, 229, 0.86);
+  box-shadow: 0 10px 24px rgba(69, 102, 145, 0.08);
+}
+.app-hdr-logo {
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(210, 218, 229, 0.85);
+  box-shadow: 0 14px 32px rgba(69, 102, 145, 0.1);
+}
+.app-hdr-logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,166,188,0.9), rgba(255,214,94,0.88));
+  box-shadow: 0 8px 18px rgba(255, 177, 87, 0.25);
+}
+#app {
+  overflow: visible;
+}
+#screen-week,
+#screen-month,
+#screen-day,
+#screen-todo,
+#screen-routine,
+#screen-prayer {
+  background: transparent;
+}
+.header {
+  background: transparent;
+  border-bottom: none;
+  padding: 14px 8px 10px;
+}
+.period-label .lbl-sub {
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+.period-label .lbl-main,
+.todo-header-title {
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+#btn-week-today,
+#btn-month-today {
+  padding: 0 15px;
+  width: auto;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.week-nav-bar,
+.weekdays {
+  background: transparent;
+  border-bottom: none;
+}
+.week-strip {
+  gap: 10px;
+  padding: 10px 2px 16px;
+}
+.week-day-col {
+  background: rgba(255,255,255,0.52);
+  border: 1px solid rgba(210, 218, 229, 0.65);
+  box-shadow: 0 10px 24px rgba(86, 113, 145, 0.08);
+  padding: 10px 2px 12px;
+}
+.week-day-col.selected {
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 16px 36px rgba(86, 113, 145, 0.14);
+}
+.week-day-col.today .week-date-num,
+.cal-cell.today .day-num,
+.sb-cal-cell.today .sb-day-num {
+  background: linear-gradient(135deg, #ff9a9e 0%, #ffcf70 100%);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(255, 166, 104, 0.28);
+}
+.week-day-col.selected:not(.today) .week-date-num,
+.sb-cal-cell.selected,
+.cal-cell.selected {
+  outline: none;
+}
+.week-list-day-hdr {
+  position: static;
+  background: transparent;
+  border-bottom: none;
+  padding: 18px 8px 10px;
+}
+.week-events-inner,
+.todo-list-wrap,
+.routine-list-wrap,
+.prayer-list-wrap {
+  padding-bottom: calc(var(--nav-h) + var(--safe-b) + 28px);
+}
+.week-list-day-events,
+#day-events-list {
+  padding: 0 0 16px;
+  display: grid;
+  gap: 12px;
+}
+.week-list-day-empty,
+.todo-empty,
+.routine-empty {
+  background: rgba(255,255,255,0.74);
+  border: 1px solid rgba(210, 218, 229, 0.8);
+  box-shadow: 0 14px 30px rgba(86, 113, 145, 0.08);
+  border-radius: 24px;
+}
+.todo-header,
+.prayer-header {
+  background: transparent;
+  border-bottom: none;
+  padding: 16px 8px 10px;
+}
+.todo-add-row,
+.prayer-add-row {
+  padding: 8px;
+  background: rgba(255,255,255,0.84);
+  border: 1px solid rgba(210, 218, 229, 0.82);
+  border-radius: 26px;
+  box-shadow: 0 16px 34px rgba(86, 113, 145, 0.1);
+}
+.todo-add-input,
+.routine-time-input,
+.prayer-input,
+.prayer-select,
+.sb-todo-input,
+.routine-priority {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.todo-add-input:focus,
+.routine-time-input:focus,
+.prayer-input:focus,
+.prayer-select:focus,
+.sb-todo-input:focus,
+.routine-priority:focus {
+  border-color: transparent;
+}
+.todo-add-btn,
+.sb-todo-add-btn,
+#btn-day-add,
+.nav-add-circle {
+  background: linear-gradient(135deg, #39b6ff 0%, #7a6cff 100%);
+  color: #fff !important;
+  box-shadow: 0 18px 34px rgba(91, 115, 255, 0.3);
+}
+#btn-day-add {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 24px;
+}
+.nav-add-circle {
+  width: 58px;
+  height: 58px;
+  margin-top: -20px;
+  font-size: 34px;
+}
+.todo-item,
+.routine-item,
+.prayer-item {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(210, 218, 229, 0.84);
+  box-shadow: 0 16px 36px rgba(86, 113, 145, 0.1);
+  border-radius: 24px;
+}
+.todo-item {
+  border-bottom: none;
+  padding: 16px 18px;
+}
+.todo-check {
+  border-color: rgba(201, 211, 224, 0.95);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(223, 229, 238, 0.8);
+}
+.todo-del {
+  background: rgba(238, 242, 247, 0.84);
+}
+.todo-meta {
+  margin-top: 6px;
+}
+.event-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.event-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 10px 18px rgba(86, 113, 145, 0.1);
+}
+.event-chip-rose { background: linear-gradient(135deg, rgba(255,150,178,0.95), rgba(255,207,219,0.98)); color: #8d3454; }
+.event-chip-amber { background: linear-gradient(135deg, rgba(255,188,107,0.96), rgba(255,223,176,0.98)); color: #9c5c00; }
+.event-chip-jade { background: linear-gradient(135deg, rgba(150,236,192,0.96), rgba(212,248,226,0.98)); color: #22734e; }
+.event-chip-indigo { background: linear-gradient(135deg, rgba(189,195,255,0.96), rgba(223,226,255,0.98)); color: #4556b4; }
+.event-chip-slate { background: linear-gradient(135deg, rgba(210,220,232,0.96), rgba(239,244,249,0.98)); color: #506173; }
+.event-chip-gold { background: linear-gradient(135deg, rgba(255,215,124,0.96), rgba(255,235,179,0.98)); color: #916300; }
+.cal-cell {
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(86, 113, 145, 0.08);
+}
+.cal-ev-chip {
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10px;
+  box-shadow: 0 6px 14px rgba(86, 113, 145, 0.1);
+}
+#pc-sidebar {
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: -18px 0 42px rgba(86, 113, 145, 0.1);
+}
+.sb-month-section,
+.sb-todo-section-wrap,
+.sb-banner-link {
+  background: transparent;
+}
+#login-screen {
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255, 183, 192, 0.56), transparent 24%),
+    radial-gradient(circle at 88% 10%, rgba(113, 211, 255, 0.52), transparent 24%),
+    radial-gradient(circle at 12% 90%, rgba(255, 221, 117, 0.44), transparent 20%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+#login-screen::before,
+#login-screen::after {
+  content: '';
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.42;
+  pointer-events: none;
+}
+#login-screen::before {
+  top: -90px;
+  left: -120px;
+  background: rgba(255, 170, 185, 0.7);
+}
+#login-screen::after {
+  right: -120px;
+  top: -70px;
+  background: rgba(126, 214, 255, 0.7);
+}
+.login-logo {
+  width: 118px;
+  height: 118px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 20px 48px rgba(86, 113, 145, 0.14);
+  margin-bottom: 28px;
+}
+.login-title {
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+.login-sub {
+  font-size: 17px;
+  margin-bottom: 22px;
+}
+.login-quote {
+  background: rgba(255,255,255,0.76);
+  border: 1px solid rgba(210, 218, 229, 0.8);
+  border-left: none;
+  box-shadow: 0 18px 34px rgba(86, 113, 145, 0.08);
+  margin-bottom: 28px;
+}
+.google-btn {
+  min-width: 280px;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 19px;
+  padding: 16px 28px;
+}
+.login-persist {
+  background: rgba(255,255,255,0.7);
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+#in-app-notice {
+  background: rgba(255,255,255,0.86);
+  box-shadow: 0 18px 34px rgba(86, 113, 145, 0.08);
+}
+#modal-event {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,248,253,0.98) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+#modal-event .header {
+  background: transparent;
+  padding: 14px 18px 10px;
+}
+#modal-event > div {
+  padding: 22px 18px 30px !important;
+}
+#modal-event input[type="text"],
+#modal-event input[type="date"],
+#modal-event select {
+  background: rgba(255,255,255,0.82) !important;
+  border: 1px solid rgba(210, 218, 229, 0.85) !important;
+  box-shadow: 0 12px 24px rgba(86, 113, 145, 0.08);
+}
+@media (max-width: 899px) {
+  #bottom-nav {
+    bottom: calc(var(--banner-h, 0px) + 10px);
+    width: calc(100% - 22px);
+    max-width: 458px;
+    border-radius: 30px;
+    border: 1px solid rgba(210, 218, 229, 0.86);
+    box-shadow: 0 18px 38px rgba(86, 113, 145, 0.12);
+  }
+  #app {
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+}
 </style>
 </head>
 <body>
@@ -1120,6 +1514,14 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
     monthly: '매월 반복',
     yearly: '매년 반복'
   };
+  const EVENT_LABELS = {
+    rose: '가족',
+    amber: '업무',
+    jade: '개인',
+    indigo: '계획',
+    slate: '기타',
+    gold: '중요'
+  };
 
   const State = {
     view: 'week',
@@ -1287,6 +1689,9 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
     if(range) parts.push(range);
     if(repeatLabel && getRepeatType(ev) !== 'none') parts.push(repeatLabel);
     return parts.join(' · ');
+  }
+  function getEventBadgeLabel(ev) {
+    return EVENT_LABELS[ev.color || 'gold'] || '일정';
   }
   function showToast(msg) {
     const t = $('toast');
@@ -1510,7 +1915,7 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
         evs.forEach(e => {
           const item = document.createElement('div');
           item.className = 'todo-item';
-          item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div><div class="todo-body"><div class="todo-title">${e.title}</div><div class="todo-meta">${formatEventMeta(e)}</div></div>`;
+          item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div><div class="todo-body"><div class="event-chip-row"><span class="event-chip event-chip-${e.color||'gold'}">${getEventBadgeLabel(e)}</span></div><div class="todo-title">${e.title}</div><div class="todo-meta">${formatEventMeta(e)}</div></div>`;
           item.onclick = ev => { ev.stopPropagation(); openEventModal(e); };
           list.appendChild(item);
         });
@@ -1559,7 +1964,7 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
       evs.forEach(e => {
         const item = document.createElement('div');
         item.className = 'todo-item';
-        item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div><div class="todo-body"><div class="todo-title">${e.title}</div><div class="todo-meta">${formatEventMeta(e)}</div></div>`;
+        item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div><div class="todo-body"><div class="event-chip-row"><span class="event-chip event-chip-${e.color||'gold'}">${getEventBadgeLabel(e)}</span></div><div class="todo-title">${e.title}</div><div class="todo-meta">${formatEventMeta(e)}</div></div>`;
         item.onclick = () => openEventModal(e);
         list.appendChild(item);
       });
