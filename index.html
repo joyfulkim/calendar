@@ -831,9 +831,9 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
 </head>
 <body>
   <!-- ── GLOBAL IN-APP BANNER ───────────────────── -->
-  <div id="global-in-app-banner" class="hidden">
-    <div class="gib-text">⚠️ 인앱 브라우저를 사용 중입니다. 원활한 이용을 위해 크롬이나 사파리 등 전용 브라우저 사용을 권장합니다.</div>
-    <button class="gib-copy-btn" id="btn-copy-url">주소 복사</button>
+  <div id="global-in-app-banner" class="hidden" onclick="openInBrowser()" style="cursor:pointer">
+    <div class="gib-text">📱 인앱 브라우저 감지!지금 바로 탭! 클릭하면 크롬/사파리로 열립니다.</div>
+    <button class="gib-copy-btn" id="btn-copy-url" onclick="event.stopPropagation(); navigator.clipboard.writeText(location.href).then(()=>alert('주소가 복사되었습니다.'))">URL 복사</button>
   </div>
 <!-- ── TOP HEADER ─────────────────────────────── -->
 <header id="app-header">
@@ -1800,6 +1800,35 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
     }, { passive: true });
   }
 
+  // ── OPEN IN BROWSER ─────────────────────────────
+  function openInBrowser() {
+    const url = location.href;
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+    if(isAndroid) {
+      // 안드로이드: intent URL로 크롬 강제 실행
+      const intentUrl = 'intent://' + url.replace(/^https?:\/\//, '') +
+        '#Intent;scheme=https;action=android.intent.action.VIEW;' +
+        'package=com.android.chrome;end';
+      location.href = intentUrl;
+    } else if(isIOS) {
+      // iOS: x-safari-https 스킴으로 사파리 강제 실행
+      const safariUrl = url.replace(/^https:\/\//, 'x-safari-https://');
+      const win = window.open(safariUrl, '_blank');
+      if(!win) {
+        // 팝업 차단 시 주소 복사 안내
+        navigator.clipboard.writeText(url)
+          .then(() => alert('\uc0ac\ud30c\ub9ac\ub85c \uc5f4\ub9ac\uc9c0 \uc54a\ub294 \uacbd\uc6b0 \uc8fc\uc18c\uac00 \ubcf5\uc0ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\uc0ac\ud30c\ub9ac \uc8fc\uc18c\ub780\uc5d0 \ubd99\uc5ec\ub123\uae30(paste)\ud574 \uc811\uc18d\ud558\uc138\uc694.'))
+          .catch(() => alert('\ubc30\ub108\ub97c \uae38\uac8c \ub204\ub974\uc138\uc694. \uc8fc\uc18c: ' + url));
+      }
+    } else {
+      // 기타: 새 탭으로 열기
+      window.open(url, '_blank');
+    }
+  }
+
   // ── EVENT HANDLERS ──────────────────────────────
   $('btn-google-login').onclick = signInWithGoogle;
   $('btn-hdr-refresh').onclick  = () => location.reload();
@@ -1807,11 +1836,6 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   $('btn-signout').onclick      = () => auth.signOut();
   $('btn-home').onclick         = () => switchScreen('week');
   $('btn-logo-home').onclick    = () => switchScreen('week');
-  $('btn-copy-url').onclick     = () => {
-    navigator.clipboard.writeText(location.href)
-      .then(() => showToast('주소가 복사되었습니다'))
-      .catch(() => showToast('복사 실패'));
-  };
 
   // Week nav
   $('btn-week-prev').onclick       = () => moveWeek(-1);
