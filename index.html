@@ -1203,6 +1203,9 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
       }
     }).catch(e => {
       console.warn('Redirect result error:', e.code, e.message);
+      if(e.message && e.message.includes('missing initial state')) {
+        alert('사파리의 "크로스 사이트 추적 방지" 기능 때문에 자동 로그인(리디렉션)이 막혔습니다.\n\n[설정] > [Safari] > [크로스 사이트 추적 방지]를 끄시거나 정상적인 팝업 창 로그인을 허용해주세요.');
+      }
     });
 
     auth.onAuthStateChanged(user => {
@@ -1225,32 +1228,36 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   }
 
   function signInWithGoogle() {
+    if(isInAppBrowser()) {
+      alert('현재 카카오톡 등 앱 내 브라우저에서는 구글 로그인이 차단될 수 있습니다.\n\n화면 하단의 [주황색 배너]를 눌러 사파리나 크롬으로 이동한 후 로그인해 주세요.');
+      return;
+    }
+
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('email');
     const persist = $('chk-persist').checked
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION;
-    showToast('로그인 요청 중...');
-    // 비동기 대기 없이 곧바로 호출해야 iOS Safari 및 PWA 환경에서 팝업이 차단되지 않음
+    
+    showToast('팝업으로 로그인을 시도합니다...');
     auth.setPersistence(persist);
 
-    if(isInAppBrowser()) {
-      // 인앱 브라우저는 팝업을 열 수 없으므로 우선 redirect
-      auth.signInWithRedirect(provider);
-    } else {
-      // 모바일(아이폰 PWA 포함) 및 데스크톱: 무조건 popup 먼저 시도
-      auth.signInWithPopup(provider)
-        .then(result => { if(result.user) handleLoggedIn(result.user); })
-        .catch(err => {
-          console.warn('Popup failed:', err.code);
-          if(err.code === 'auth/popup-blocked') {
-            showToast('팝업 차단됨. 리디렉션으로 시도합니다...');
+    // Safari 및 모바일 포함 PWA 환경을 위해 1차적으로 팝업 시도
+    auth.signInWithPopup(provider)
+      .then(result => { if(result.user) handleLoggedIn(result.user); })
+      .catch(err => {
+        console.warn('Popup failed:', err.code);
+        if(err.code === 'auth/popup-blocked') {
+          // 팝업이 차단된 경우, iOS Safari는 Redirect 도 차단(세션 유실)되는 경우가 많음
+          const confirmRedirect = confirm('팝업 창이 차단되었습니다. 사파리 설정에서 팝업 차단을 해제하시거나, 리디렉션 모드로 로그인하시겠습니까?\n\n(참고: 아이폰은 사파리 "크로스 사이트 추적 방지"를 꺼야 리디렉션 로그인이 정상 동작합니다.)');
+          if(confirmRedirect) {
             auth.signInWithRedirect(provider);
-          } else {
-            showToast('로그인 실패: ' + err.message);
           }
-        });
-    }
+        } else {
+          // 기타 에러 시 최후의 수단으로 리디렉션 폴백
+          auth.signInWithRedirect(provider);
+        }
+      });
   }
 
   // ── LISTENERS ───────────────────────────────────
