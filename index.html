@@ -1177,6 +1177,21 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
     $('login-quote-text').textContent = q.text;
     $('login-quote-author').textContent = '— ' + q.author;
 
+    // 모바일 리디렉션 로그인 결과 처리 (일부 브라우저에서 onAuthStateChanged 누락 방지)
+    auth.getRedirectResult().then(result => {
+      if(result && result.user) {
+        const user = result.user;
+        currentUser = user;
+        $('login-screen').classList.add('hidden');
+        $('btn-user-avatar').style.display = 'flex';
+        renderUserInfo(user);
+        startListeners(user.uid);
+        switchScreen('week');
+      }
+    }).catch(e => {
+      console.warn('Redirect result error:', e);
+    });
+
     auth.onAuthStateChanged(user => {
       currentUser = user;
       if(user) {
