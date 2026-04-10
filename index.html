@@ -1231,21 +1231,26 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION;
     showToast('로그인 요청 중...');
-    auth.setPersistence(persist).then(() => {
-      if(isInAppBrowser()) {
-        // 인앱 브라우저는 redirect만 가능
-        auth.signInWithRedirect(provider);
-      } else {
-        // 모바일 포함 모든 환경에서 popup 우선 시도
-        auth.signInWithPopup(provider)
-          .then(result => { if(result.user) handleLoggedIn(result.user); })
-          .catch(err => {
-            console.warn('Popup failed, trying redirect:', err.code);
-            // popup 실패 시 redirect 폴백
+    // 비동기 대기 없이 곧바로 호출해야 iOS Safari 및 PWA 환경에서 팝업이 차단되지 않음
+    auth.setPersistence(persist);
+
+    if(isInAppBrowser()) {
+      // 인앱 브라우저는 팝업을 열 수 없으므로 우선 redirect
+      auth.signInWithRedirect(provider);
+    } else {
+      // 모바일(아이폰 PWA 포함) 및 데스크톱: 무조건 popup 먼저 시도
+      auth.signInWithPopup(provider)
+        .then(result => { if(result.user) handleLoggedIn(result.user); })
+        .catch(err => {
+          console.warn('Popup failed:', err.code);
+          if(err.code === 'auth/popup-blocked') {
+            showToast('팝업 차단됨. 리디렉션으로 시도합니다...');
             auth.signInWithRedirect(provider);
-          });
-      }
-    }).catch(e => { console.error(e); showToast('로그인 실패: ' + e.message); });
+          } else {
+            showToast('로그인 실패: ' + err.message);
+          }
+        });
+    }
   }
 
   // ── LISTENERS ───────────────────────────────────
