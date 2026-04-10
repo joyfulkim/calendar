@@ -180,7 +180,11 @@ input, textarea { font-family: inherit; }
   opacity: 1;
   pointer-events: auto;
 }
-#screen-day.hidden { transform: translateY(100%); opacity: 1; }
+#screen-day.hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* modal */
 #modal-event {
@@ -919,7 +923,7 @@ body::after {
   box-shadow: 0 8px 18px rgba(255, 177, 87, 0.25);
 }
 #app {
-  overflow: visible;
+  overflow: hidden;
 }
 #screen-week,
 #screen-month,
