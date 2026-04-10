@@ -833,7 +833,6 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   <!-- ── GLOBAL IN-APP BANNER ───────────────────── -->
   <div id="global-in-app-banner" class="hidden" style="cursor:pointer">
     <div class="gib-text">📱 인앱 브라우저 감지! 클릭하시면, '크롬/사파리' 앱으로 다시 열어 드립니다.</div>
-    <button class="gib-copy-btn" id="btn-copy-url">URL 복사</button>
   </div>
 <!-- ── TOP HEADER ─────────────────────────────── -->
 <header id="app-header">
@@ -1853,16 +1852,9 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   $('btn-home').onclick         = () => switchScreen('week');
   $('btn-logo-home').onclick    = () => switchScreen('week');
 
-  // In-app banner: 배너 클릭 → 외부 브라우저 이동, 버튼 클릭 → URL 복사
+  // In-app banner: 배너 클릭 → 외부 브라우저 이동
   const bannerEl = $('global-in-app-banner');
-  const copyBtn  = $('btn-copy-url');
   if(bannerEl) bannerEl.onclick = openInBrowser;
-  if(copyBtn) copyBtn.onclick = e => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(location.href)
-      .then(() => showToast('주소가 복사되었습니다'))
-      .catch(() => showToast('복사 실패'));
-  };
 
   // Week nav
   $('btn-week-prev').onclick       = () => moveWeek(-1);
