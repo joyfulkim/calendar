@@ -1808,23 +1808,39 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
 
     if(isAndroid) {
-      // 안드로이드: intent URL로 크롬 강제 실행
-      const intentUrl = 'intent://' + url.replace(/^https?:\/\//, '') +
-        '#Intent;scheme=https;action=android.intent.action.VIEW;' +
-        'package=com.android.chrome;end';
-      location.href = intentUrl;
+      // 안드로이드: intent URL을 anchor 클릭으로 실행 (location.href보다 신뢰도 높음)
+      const host = url.replace(/^https?:\/\//, '');
+      const intentUrl = 'intent://' + host +
+        '#Intent;scheme=https;action=android.intent.action.VIEW;end';
+      const a = document.createElement('a');
+      a.href = intentUrl;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => document.body.removeChild(a), 1000);
+
+      // 1초 후에도 페이지가 그대로라면 크롬 직접 이동
+      setTimeout(() => {
+        const chromeUrl = 'googlechrome://navigate?url=' + encodeURIComponent(url);
+        const a2 = document.createElement('a');
+        a2.href = chromeUrl;
+        a2.style.display = 'none';
+        document.body.appendChild(a2);
+        a2.click();
+        setTimeout(() => document.body.removeChild(a2), 1000);
+      }, 1200);
+
     } else if(isIOS) {
-      // iOS: x-safari-https 스킴으로 사파리 강제 실행
+      // iOS: x-safari-https 스킴 시도 (카카오톡, 라인 등에서 사파리로 이동됨)
       const safariUrl = url.replace(/^https:\/\//, 'x-safari-https://');
-      const win = window.open(safariUrl, '_blank');
-      if(!win) {
-        // 팝업 차단 시 주소 복사 안내
-        navigator.clipboard.writeText(url)
-          .then(() => alert('\uc0ac\ud30c\ub9ac\ub85c \uc5f4\ub9ac\uc9c0 \uc54a\ub294 \uacbd\uc6b0 \uc8fc\uc18c\uac00 \ubcf5\uc0ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\uc0ac\ud30c\ub9ac \uc8fc\uc18c\ub780\uc5d0 \ubd99\uc5ec\ub123\uae30(paste)\ud574 \uc811\uc18d\ud558\uc138\uc694.'))
-          .catch(() => alert('\ubc30\ub108\ub97c \uae38\uac8c \ub204\ub974\uc138\uc694. \uc8fc\uc18c: ' + url));
-      }
+      window.location.href = safariUrl;
+
+      // 0.5초 뒤에도 앱 내에 있으면 window.open 시도
+      setTimeout(() => {
+        try { window.open(url, '_blank'); } catch(e) {}
+      }, 500);
+
     } else {
-      // 기타: 새 탭으로 열기
       window.open(url, '_blank');
     }
   }
