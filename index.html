@@ -882,12 +882,25 @@ body::after {
   background: rgba(255, 210, 104, 0.38);
 }
 #app,
-#login-screen,
-#app-header,
-#pc-sidebar,
-#modal-event,
-#global-in-app-banner {
+#pc-sidebar {
   z-index: 1;
+}
+body.login-locked #app,
+body.login-locked #app-header,
+body.login-locked #pc-sidebar {
+  display: none;
+}
+#login-screen {
+  z-index: 900;
+}
+#app-header {
+  z-index: 1000;
+}
+#modal-event {
+  z-index: 1100;
+}
+#global-in-app-banner {
+  z-index: 5000;
 }
 #app-header {
   background: transparent;
@@ -1250,7 +1263,7 @@ body::after {
 }
 </style>
 </head>
-<body>
+<body class="login-locked">
   <!-- ── GLOBAL IN-APP BANNER ───────────────────── -->
   <div id="global-in-app-banner" class="hidden" style="cursor:pointer">
     <div class="gib-text">📱 인앱 브라우저 감지! 클릭하시면, '크롬/사파리' 앱으로 다시 열어 드립니다.</div>
@@ -1756,6 +1769,7 @@ body::after {
   function handleLoggedIn(user) {
     if(!user) return;
     currentUser = user;
+    document.body.classList.remove('login-locked');
     $('login-screen').classList.add('hidden');
     $('btn-user-avatar').style.display = 'flex';
     renderUserInfo(user);
@@ -1806,9 +1820,11 @@ body::after {
       if(user) {
         handleLoggedIn(user);
       } else {
+        document.body.classList.add('login-locked');
         _listenersStarted = false;
         $('login-screen').classList.remove('hidden');
         $('btn-user-avatar').style.display = 'none';
+        $('user-menu').classList.add('hidden');
       }
     });
 
