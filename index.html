@@ -1171,6 +1171,21 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   }
 
   // ── FIREBASE INIT ────────────────────────────────
+  let _listenersStarted = false;
+
+  function handleLoggedIn(user) {
+    if(!user) return;
+    currentUser = user;
+    $('login-screen').classList.add('hidden');
+    $('btn-user-avatar').style.display = 'flex';
+    renderUserInfo(user);
+    if(!_listenersStarted) {
+      _listenersStarted = true;
+      startListeners(user.uid);
+    }
+    switchScreen('week');
+  }
+
   function initFirebase() {
     firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
@@ -1185,27 +1200,18 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
     // 모바일 리디렉션 로그인 결과 처리 (일부 브라우저에서 onAuthStateChanged 누락 방지)
     auth.getRedirectResult().then(result => {
       if(result && result.user) {
-        const user = result.user;
-        currentUser = user;
-        $('login-screen').classList.add('hidden');
-        $('btn-user-avatar').style.display = 'flex';
-        renderUserInfo(user);
-        startListeners(user.uid);
-        switchScreen('week');
+        handleLoggedIn(result.user);
       }
     }).catch(e => {
-      console.warn('Redirect result error:', e);
+      console.warn('Redirect result error:', e.code, e.message);
     });
 
     auth.onAuthStateChanged(user => {
       currentUser = user;
       if(user) {
-        $('login-screen').classList.add('hidden');
-        $('btn-user-avatar').style.display = 'flex';
-        renderUserInfo(user);
-        startListeners(user.uid);
-        switchScreen('week');
+        handleLoggedIn(user);
       } else {
+        _listenersStarted = false;
         $('login-screen').classList.remove('hidden');
         $('btn-user-avatar').style.display = 'none';
       }
@@ -1221,15 +1227,24 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
 
   function signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
     const persist = $('chk-persist').checked
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION;
     showToast('로그인 요청 중...');
     auth.setPersistence(persist).then(() => {
-      if(isInAppBrowser() || isMobile()) {
+      if(isInAppBrowser()) {
+        // 인앱 브라우저는 redirect만 가능
         auth.signInWithRedirect(provider);
       } else {
-        auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+        // 모바일 포함 모든 환경에서 popup 우선 시도
+        auth.signInWithPopup(provider)
+          .then(result => { if(result.user) handleLoggedIn(result.user); })
+          .catch(err => {
+            console.warn('Popup failed, trying redirect:', err.code);
+            // popup 실패 시 redirect 폴백
+            auth.signInWithRedirect(provider);
+          });
       }
     }).catch(e => { console.error(e); showToast('로그인 실패: ' + e.message); });
   }
