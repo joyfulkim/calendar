@@ -97,17 +97,17 @@ input, textarea { font-family: inherit; }
   justify-content: space-between;
   padding-left: 8px;
   padding-right: 8px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--surface-border);
+  background: linear-gradient(180deg, rgba(33, 44, 65, 0.92), rgba(47, 60, 84, 0.8));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(164, 183, 216, 0.2);
 }
 .app-hdr-btn {
   width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--r-sm);
   font-size: 18px;
-  color: var(--text-2);
+  color: rgba(244, 247, 255, 0.88);
   flex-shrink: 0;
   pointer-events: auto;
   transition: background 120ms, color 120ms;
@@ -118,7 +118,7 @@ input, textarea { font-family: inherit; }
 .app-hdr-logo {
   display: flex; align-items: center; gap: 7px;
   font-size: 15px; font-weight: 800;
-  color: var(--text-1); letter-spacing: -0.03em;
+  color: #f7f9ff; letter-spacing: -0.03em;
   cursor: pointer;
   user-select: none; -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -167,6 +167,10 @@ input, textarea { font-family: inherit; }
 
 #screen-week { background: var(--surface-0); }
 #screen-month {
+  background: var(--surface-0);
+  padding-bottom: calc(var(--nav-h) + var(--safe-b));
+}
+#screen-guide {
   background: var(--surface-0);
   padding-bottom: calc(var(--nav-h) + var(--safe-b));
 }
@@ -286,6 +290,7 @@ input, textarea { font-family: inherit; }
   z-index: 500;
 }
 .nav-tab {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -299,7 +304,24 @@ input, textarea { font-family: inherit; }
   padding-bottom: 2px;
 }
 .nav-tab.active { color: var(--accent); }
-.nav-tab-icon { font-size: 20px; line-height: 1; }
+.nav-tab-icon {
+  width: auto;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: transform 150ms;
+}
+.nav-tab-icon svg {
+  width: 42px;
+  height: 42px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .nav-tab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.02em; }
 .nav-add {
   flex: 1;
@@ -356,12 +378,25 @@ input, textarea { font-family: inherit; }
   padding: 8px 0 10px;
   gap: 2px;
 }
+#week-header-actions,
+#btn-week-swipe-prev,
+#btn-week-swipe-next {
+  display: none;
+}
+.week-nav-bar {
+  padding-top: 0;
+}
+.week-nav-bar #week-strip {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
 .week-day-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 6px 2px;
+  gap: 4px;
+  padding: 4px 2px;
   border-radius: var(--r-md);
   cursor: pointer;
   transition: background 120ms;
@@ -382,7 +417,7 @@ input, textarea { font-family: inherit; }
 .week-day-col.selected .week-dow { color: var(--text-2); }
 
 .week-date-num {
-  width: 30px; height: 30px;
+  width: 28px; height: 28px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%;
   font-size: 14px;
@@ -597,6 +632,220 @@ input, textarea { font-family: inherit; }
   .prayer-date { font-size: 12px; color: var(--text-3); }
   .btn-answer { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 4px; background: var(--surface-3); color: var(--text-2); border: 1px solid var(--surface-border); cursor: pointer; }
   .prayer-item.answered .prayer-title { color: var(--text-3); }
+
+  /* ─── GUIDE SCREEN ─────────────────────────────── */
+  .guide-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 8px calc(var(--nav-h) + var(--safe-b) + 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .guide-header {
+    padding-top: 22px;
+    padding-bottom: 12px;
+    align-items: flex-start;
+  }
+  .guide-header .period-label {
+    padding-top: 2px;
+  }
+  .guide-header .lbl-sub {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .guide-header .lbl-main {
+    font-size: 24px;
+    line-height: 1.15;
+  }
+  .guide-hero,
+  .guide-card {
+    background: rgba(248, 251, 255, 0.98);
+    border: 1px solid rgba(204, 216, 234, 0.92);
+    box-shadow: 0 18px 38px rgba(8, 18, 38, 0.18);
+    border-radius: 28px;
+  }
+  .guide-hero {
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .guide-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -40px -56px auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(122,108,255,0.16), rgba(122,108,255,0));
+    pointer-events: none;
+  }
+  .guide-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(57,182,255,0.12);
+    color: #2278a7;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .guide-hero h2,
+  .guide-card h3 {
+    margin: 0;
+    color: #1f3048;
+    letter-spacing: -0.04em;
+  }
+  .guide-hero h2 {
+    font-size: 30px;
+    line-height: 1.15;
+  }
+  .guide-hero p,
+  .guide-card p,
+  .guide-card li {
+    color: #556b8d;
+    line-height: 1.7;
+  }
+  .guide-hero p {
+    font-size: 14px;
+    margin: 14px 0 0;
+    max-width: 560px;
+  }
+  .guide-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .guide-pill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(248, 250, 253, 0.95);
+    border: 1px solid rgba(210, 218, 229, 0.84);
+    color: var(--text-2);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .guide-grid {
+    display: grid;
+    gap: 16px;
+  }
+  .guide-card {
+    padding: 20px;
+  }
+  .guide-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .guide-card-copy {
+    flex: 1;
+    min-width: 0;
+  }
+  .guide-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .guide-card p { font-size: 14px; margin: 0 0 14px; }
+  .guide-emoji {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,245,255,0.88));
+    border: 1px solid rgba(210, 218, 229, 0.82);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 12px 24px rgba(86, 113, 145, 0.1);
+    flex-shrink: 0;
+  }
+  .guide-stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 14px;
+  }
+  .guide-stat {
+    min-width: 120px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(204, 216, 234, 0.92);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
+  }
+  .guide-stat-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #6f84a7;
+    margin-bottom: 5px;
+  }
+  .guide-stat-value {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #243754;
+    line-height: 1.4;
+  }
+  .guide-list {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .guide-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+  }
+  .guide-chip.blue { background: rgba(57,182,255,0.14); color: #2278a7; }
+  .guide-chip.gold { background: rgba(214,161,31,0.14); color: #9e6e10; }
+  .guide-chip.green { background: rgba(22,163,74,0.12); color: #1e7b43; }
+  .guide-chip.rose { background: rgba(224,92,106,0.12); color: #a43d53; }
+  .guide-chip.indigo { background: rgba(79,70,229,0.12); color: #4d43b8; }
+  .guide-chip.slate { background: rgba(100,116,139,0.14); color: #516172; }
+  .guide-card.blue .guide-emoji { background: linear-gradient(135deg, rgba(208,238,255,0.95), rgba(234,244,255,0.92)); }
+  .guide-card.gold .guide-emoji { background: linear-gradient(135deg, rgba(255,235,193,0.96), rgba(255,246,220,0.94)); }
+  .guide-card.green .guide-emoji { background: linear-gradient(135deg, rgba(216,246,228,0.96), rgba(236,251,242,0.94)); }
+  .guide-card.rose .guide-emoji { background: linear-gradient(135deg, rgba(255,223,228,0.96), rgba(255,241,243,0.94)); }
+  .guide-card.indigo .guide-emoji { background: linear-gradient(135deg, rgba(226,226,255,0.96), rgba(240,239,255,0.94)); }
+  .guide-card.slate .guide-emoji { background: linear-gradient(135deg, rgba(231,237,245,0.96), rgba(244,247,251,0.94)); }
+  .guide-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #a9bcdd;
+    padding: 4px 6px 0;
+  }
+  @media (min-width: 900px) {
+    .guide-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .guide-header {
+      padding-top: 26px;
+      padding-bottom: 16px;
+    }
+    .guide-header .lbl-main {
+      font-size: 22px;
+    }
+    .guide-scroll {
+      padding-top: 0;
+    }
+  }
 
 /* ─── ANIMATIONS ─────────────────────────────────── */
 @keyframes slideInLeft {
@@ -814,7 +1063,39 @@ input[type="date"], input[type="time"] { color-scheme: light; }
   #app-header { padding-right: calc(420px + 8px); }
   #bottom-nav { max-width: calc(100vw - 420px); width: calc(100vw - 420px); left: 0; transform: none; }
   #pc-sidebar { display: flex; flex-direction: column; position: fixed; top: calc(var(--header-h) + var(--safe-t)); right: 0; width: 420px; bottom: 0; background: var(--surface-1); border-left: 1px solid var(--surface-border); overflow: hidden; z-index: 40; }
-  .sb-month-section { padding: 16px 16px 8px; border-bottom: 1px solid var(--surface-border); flex-shrink: 0; }
+  .sb-month-section { padding: 8px 16px 8px; border-bottom: 1px solid var(--surface-border); flex-shrink: 0; }
+  .sb-guide-btn {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(210, 218, 229, 0.84);
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,248,255,0.95));
+    color: var(--text-1);
+    box-shadow: 0 12px 28px rgba(86, 113, 145, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sb-guide-btn:active { transform: scale(0.99); }
+  .sb-guide-btn-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sb-guide-btn-label { font-size: 13px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-1); }
+  .sb-guide-btn-sub { font-size: 11px; color: var(--text-2); line-height: 1.4; text-align: left; }
+  .sb-guide-btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #39b6ff 0%, #7a6cff 100%);
+    color: #fff;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
   .sb-month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .sb-month-lbl { font-size: 13px; font-weight: 800; color: var(--text-1); letter-spacing: -0.02em; }
   .sb-nav-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: var(--r-sm); font-size: 16px; color: var(--text-2); transition: background 120ms, color 120ms; -webkit-tap-highlight-color: transparent; cursor: pointer; }
@@ -848,7 +1129,7 @@ input[type="date"], input[type="time"] { color-scheme: light; }
   .sb-todo-title { font-size: 12px; font-weight: 500; color: var(--text-1); line-height: 1.4; word-break: break-word; flex: 1; }
   .sb-todo-item.done .sb-todo-title { color: var(--text-3); text-decoration: line-through; }
   .sb-todo-empty { padding: 30px 16px; font-size: 12px; color: var(--text-3); text-align: center; }
-  .sb-banner-section { flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 16px; border-top: 1px solid var(--surface-border); }
+  .sb-banner-section { flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 8px 16px 12px; border-top: 1px solid var(--surface-border); }
   .sb-banner-link { display: block; width: 100%; border-radius: var(--r-sm); overflow: hidden; position: relative; background: var(--surface-2); border: 1px solid var(--surface-border); transition: transform 120ms, box-shadow 120ms; text-decoration: none; }
   .sb-banner-link:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(23,33,48,0.12); }
   .sb-banner-img { width: 100%; height: auto; display: block; object-fit: contain; }
@@ -915,10 +1196,10 @@ body.login-locked #pc-sidebar {
   z-index: 5000;
 }
 #app-header {
-  background: transparent;
-  border-bottom: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: linear-gradient(180deg, rgba(28, 38, 58, 0.96), rgba(44, 56, 80, 0.86));
+  border-bottom: 1px solid rgba(176, 195, 229, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 .app-hdr-btn,
 .hdr-refresh-btn,
@@ -926,16 +1207,18 @@ body.login-locked #pc-sidebar {
 .nav-btn,
 .week-nav-arrow,
 .sb-nav-btn {
-  background: rgba(255,255,255,0.78);
-  border: 1px solid rgba(210, 218, 229, 0.86);
-  box-shadow: 0 10px 24px rgba(69, 102, 145, 0.08);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(180, 197, 228, 0.18);
+  box-shadow: 0 10px 24px rgba(8, 15, 31, 0.18);
+  color: rgba(244, 247, 255, 0.92);
 }
 .app-hdr-logo {
-  padding: 11px 18px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.82);
-  border: 1px solid rgba(210, 218, 229, 0.85);
-  box-shadow: 0 14px 32px rgba(69, 102, 145, 0.1);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #f7f9ff;
 }
 .app-hdr-logo-icon {
   display: inline-flex;
@@ -944,14 +1227,15 @@ body.login-locked #pc-sidebar {
   width: 28px;
   height: 28px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255,166,188,0.9), rgba(255,214,94,0.88));
-  box-shadow: 0 8px 18px rgba(255, 177, 87, 0.25);
+  background: linear-gradient(135deg, rgba(255,166,188,0.95), rgba(255,214,94,0.92));
+  box-shadow: 0 8px 18px rgba(10, 16, 29, 0.24);
 }
 #app {
   overflow: hidden;
 }
 #screen-week,
 #screen-month,
+#screen-guide,
 #screen-day,
 #screen-todo,
 #screen-routine,
@@ -987,13 +1271,13 @@ body.login-locked #pc-sidebar {
 }
 .week-strip {
   gap: 10px;
-  padding: 10px 2px 16px;
+  padding: 6px 2px 10px;
 }
 .week-day-col {
   background: rgba(255,255,255,0.52);
   border: 1px solid rgba(210, 218, 229, 0.65);
   box-shadow: 0 10px 24px rgba(86, 113, 145, 0.08);
-  padding: 10px 2px 12px;
+  padding: 8px 2px;
 }
 .week-day-col.selected {
   background: rgba(255,255,255,0.92);
@@ -1259,14 +1543,576 @@ body.login-locked #pc-sidebar {
   border: 1px solid rgba(210, 218, 229, 0.85) !important;
   box-shadow: 0 12px 24px rgba(86, 113, 145, 0.08);
 }
+
+/* ─── STITCH DASHBOARD REDESIGN ─────────────────── */
+:root {
+  --surface-0: #071427;
+  --surface-1: rgba(14, 28, 49, 0.82);
+  --surface-2: rgba(20, 39, 67, 0.88);
+  --surface-3: rgba(34, 60, 102, 0.92);
+  --surface-border: rgba(163, 189, 239, 0.18);
+  --accent: #3ca6ff;
+  --accent-dim: #2f7fd5;
+  --accent-glow: rgba(60, 166, 255, 0.28);
+  --text-1: #f3f7ff;
+  --text-2: #b2c2df;
+  --text-3: #7f93b8;
+  --text-inv: #ffffff;
+}
+html, body {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(87, 105, 255, 0.24), transparent 22%),
+    radial-gradient(circle at 84% 14%, rgba(35, 127, 255, 0.2), transparent 20%),
+    radial-gradient(circle at 54% 100%, rgba(13, 89, 242, 0.18), transparent 28%),
+    linear-gradient(150deg, #06101f 0%, #0a1930 48%, #081427 100%);
+  color: var(--text-1);
+}
+body::before {
+  top: 2%;
+  right: -34px;
+  width: 320px;
+  height: 320px;
+  background: rgba(86, 109, 255, 0.2);
+  opacity: 0.7;
+}
+body::after {
+  left: -90px;
+  bottom: 2%;
+  width: 300px;
+  height: 300px;
+  background: rgba(12, 88, 242, 0.18);
+  opacity: 0.56;
+}
+#app-header {
+  background: linear-gradient(180deg, rgba(6, 13, 27, 0.94), rgba(8, 20, 39, 0.7));
+  border-bottom: 1px solid rgba(166, 191, 243, 0.08);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+}
+.app-hdr-btn,
+.hdr-refresh-btn,
+.header-back,
+.nav-btn,
+.week-nav-arrow,
+.sb-nav-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(165, 188, 235, 0.16);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  color: rgba(243, 247, 255, 0.92);
+}
+.app-hdr-btn:active,
+.hdr-refresh-btn:active,
+.header-back:active,
+.nav-btn:active,
+.week-nav-arrow:active,
+.sb-nav-btn:active {
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+}
+.app-hdr-logo {
+  color: #f7f9ff;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.18);
+}
+.app-hdr-logo-icon {
+  background: linear-gradient(135deg, rgba(60,166,255,0.98), rgba(128,106,255,0.9));
+  box-shadow: 0 10px 24px rgba(9, 22, 44, 0.3);
+}
+#app {
+  background: linear-gradient(180deg, rgba(10, 20, 38, 0.7), rgba(11, 24, 45, 0.88));
+  border: 1px solid rgba(163, 189, 239, 0.14);
+  border-radius: 28px;
+  box-shadow: 0 32px 90px rgba(2, 8, 20, 0.42);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  margin-top: calc(var(--header-h) + var(--safe-t) + 14px);
+  height: calc(100dvh - var(--header-h) - var(--safe-t) - 28px);
+}
+#screen-week,
+#screen-month,
+#screen-guide,
+#screen-todo,
+#screen-routine,
+#screen-prayer {
+  padding: 0 14px 14px;
+}
+#screen-day {
+  background: linear-gradient(180deg, rgba(10, 20, 38, 0.98), rgba(12, 27, 50, 0.98));
+  border-left: 1px solid rgba(163, 189, 239, 0.18);
+}
+.header {
+  padding: 18px 4px 14px;
+}
+.period-label .lbl-sub {
+  color: var(--text-3);
+}
+.period-label .lbl-main,
+.todo-header-title {
+  color: var(--text-1);
+}
+.week-nav-bar,
+.weekdays {
+  background: linear-gradient(180deg, rgba(17, 33, 58, 0.82), rgba(14, 26, 49, 0.82));
+  border: 1px solid rgba(163, 189, 239, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 20px 34px rgba(2, 8, 20, 0.2);
+}
+.week-nav-bar {
+  border-radius: 24px;
+  padding: 10px 12px;
+}
+.weekdays {
+  border-radius: 24px 24px 0 0;
+  border-bottom: none;
+  padding: 12px 8px 10px;
+}
+.week-strip {
+  gap: 10px;
+  padding: 0 2px;
+}
+.week-day-col,
+.cal-cell,
+.sb-cal-cell,
+.todo-add-row,
+.prayer-add-row,
+.prayer-tab-row,
+.routine-item,
+.prayer-item,
+.todo-item,
+#modal-event input[type="text"],
+#modal-event input[type="date"],
+#modal-event input[type="time"],
+#modal-event select,
+#modal-event textarea {
+  border: 1px solid rgba(163, 189, 239, 0.16);
+}
+.week-day-col {
+  background: linear-gradient(180deg, rgba(20, 40, 68, 0.86), rgba(14, 29, 50, 0.86));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 16px 28px rgba(4, 10, 22, 0.2);
+}
+.week-day-col.selected {
+  background: linear-gradient(180deg, rgba(31, 57, 96, 0.96), rgba(22, 42, 71, 0.94));
+  border-color: rgba(114, 169, 255, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 18px 30px rgba(5, 14, 30, 0.28);
+}
+.week-day-col.today .week-date-num,
+.cal-cell.today .day-num,
+.sb-cal-cell.today .sb-day-num {
+  background: linear-gradient(135deg, #2d96ff 0%, #66b1ff 100%);
+  box-shadow: 0 12px 28px rgba(45, 150, 255, 0.32);
+}
+.week-day-col.selected:not(.today) .week-date-num {
+  outline-color: rgba(96, 164, 255, 0.7);
+}
+.week-list-day-hdr {
+  padding: 18px 6px 8px;
+}
+.week-list-day-hdr .wldh-num,
+.week-list-day-hdr .wldh-dow,
+.weekday,
+.week-dow,
+.day-num,
+.sb-day-num,
+.sb-month-lbl,
+.sb-todo-hdr-title {
+  color: var(--text-1);
+}
+.weekday,
+.week-dow,
+.wldh-dow,
+.guide-section-title,
+.sb-weekday {
+  color: var(--text-3);
+}
+.week-events-wrap,
+.todo-list-wrap,
+.routine-list-wrap,
+.prayer-list-wrap,
+.guide-scroll {
+  scrollbar-color: rgba(163, 189, 239, 0.18) transparent;
+}
+.week-block-label {
+  color: #95abcf;
+}
+.week-list-day-empty,
+.todo-empty,
+.routine-empty {
+  background: rgba(11, 23, 43, 0.72);
+  border: 1px solid rgba(163, 189, 239, 0.14);
+  color: var(--text-3);
+}
+.todo-item,
+.routine-item,
+.prayer-item {
+  background: linear-gradient(180deg, rgba(18, 34, 58, 0.88), rgba(12, 26, 46, 0.92));
+  border: 1px solid rgba(163, 189, 239, 0.16);
+  box-shadow: 0 18px 34px rgba(2, 8, 20, 0.24);
+}
+.todo-title,
+.routine-title,
+.prayer-title,
+.todo-header-title {
+  color: var(--text-1);
+}
+.todo-meta,
+.prayer-date,
+.login-sub,
+.login-persist-label,
+.user-menu-email {
+  color: var(--text-2);
+}
+.todo-note {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(163, 189, 239, 0.14);
+  color: var(--text-2);
+}
+.todo-check,
+.sb-todo-check {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(163, 189, 239, 0.18);
+  box-shadow: none;
+}
+.todo-del {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-3);
+}
+.todo-add-row,
+.prayer-add-row {
+  background: linear-gradient(180deg, rgba(18, 34, 58, 0.7), rgba(14, 29, 50, 0.74));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 16px 30px rgba(2, 8, 20, 0.18);
+}
+.prayer-tab-row {
+  background: rgba(10, 23, 43, 0.7);
+  border: 1px solid rgba(163, 189, 239, 0.12);
+}
+.prayer-tab.active {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-1);
+  box-shadow: none;
+}
+.todo-add-input,
+.prayer-input,
+.prayer-select,
+.routine-time-input,
+.routine-priority,
+.sb-todo-input {
+  color: var(--text-1);
+}
+.todo-add-input::placeholder,
+.prayer-input::placeholder,
+.sb-todo-input::placeholder,
+#modal-event textarea::placeholder {
+  color: var(--text-3);
+}
+#cal-grid {
+  background: linear-gradient(180deg, rgba(11, 23, 43, 0.9), rgba(9, 19, 36, 0.9));
+  border: 1px solid rgba(163, 189, 239, 0.12);
+  border-top: none;
+  border-radius: 0 0 28px 28px;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+.cal-cell {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  border-right: 1px solid rgba(163, 189, 239, 0.12);
+  border-bottom: 1px solid rgba(163, 189, 239, 0.12);
+  border-radius: 0;
+  align-items: flex-start;
+  padding: 10px 8px;
+}
+.cal-cell.selected {
+  background: rgba(44, 78, 129, 0.32);
+  border-color: rgba(96, 164, 255, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(96, 164, 255, 0.25);
+}
+.cal-cell.other-month .day-num {
+  color: rgba(127, 147, 184, 0.55);
+}
+.cal-ev-chip {
+  border-radius: 7px;
+  font-size: 10px;
+  padding: 3px 5px;
+  font-weight: 700;
+}
+#pc-sidebar {
+  background: linear-gradient(180deg, rgba(14, 28, 49, 0.88), rgba(10, 20, 38, 0.94));
+  border: 1px solid rgba(163, 189, 239, 0.12);
+  box-shadow: 0 30px 80px rgba(2, 8, 20, 0.3);
+}
+.sb-month-section,
+.sb-todo-section-wrap,
+.sb-banner-section {
+  background: transparent;
+}
+.sb-guide-btn {
+  background: linear-gradient(180deg, rgba(32, 53, 86, 0.92), rgba(18, 35, 61, 0.92));
+  border: 1px solid rgba(163, 189, 239, 0.18);
+  box-shadow: 0 18px 34px rgba(2, 8, 20, 0.24);
+}
+.sb-guide-btn-label,
+.sb-month-lbl,
+.sb-todo-title,
+.user-menu-name {
+  color: var(--text-1);
+}
+.sb-guide-btn-sub,
+.sb-todo-empty {
+  color: var(--text-2);
+}
+.sb-guide-btn-icon,
+.sb-todo-add-btn,
+.todo-add-btn,
+#btn-day-add,
+.nav-add-circle {
+  background: linear-gradient(135deg, #1e8fff 0%, #4db0ff 100%);
+  box-shadow: 0 18px 34px rgba(30, 143, 255, 0.28);
+}
+.sb-cal-cell {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+}
+.sb-cal-cell.selected {
+  background: rgba(44, 78, 129, 0.32);
+  outline: 1px solid rgba(96, 164, 255, 0.4);
+}
+.sb-todo-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(163, 189, 239, 0.1);
+  border-radius: 16px;
+  margin: 0 16px 8px;
+  padding: 10px 12px;
+}
+.sb-banner-link {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(163, 189, 239, 0.1);
+}
+#user-menu {
+  width: 260px;
+  background: linear-gradient(180deg, rgba(19, 35, 61, 0.96), rgba(12, 24, 44, 0.98));
+  border: 1px solid rgba(163, 189, 239, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 26px 56px rgba(2, 8, 20, 0.34);
+}
+.user-menu-info {
+  border-bottom: 1px solid rgba(163, 189, 239, 0.12);
+}
+.user-signout-btn {
+  color: #ffb9c4;
+}
+.user-signout-btn:active {
+  background: rgba(255,255,255,0.06);
+}
+#login-screen {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(87, 105, 255, 0.24), transparent 22%),
+    radial-gradient(circle at 84% 14%, rgba(35, 127, 255, 0.2), transparent 20%),
+    radial-gradient(circle at 54% 100%, rgba(13, 89, 242, 0.18), transparent 28%),
+    linear-gradient(150deg, #06101f 0%, #0a1930 48%, #081427 100%);
+}
+#login-screen::before {
+  background: rgba(63, 133, 255, 0.36);
+}
+#login-screen::after {
+  background: rgba(120, 108, 255, 0.3);
+}
+.login-logo,
+.login-quote,
+.google-btn,
+.login-persist,
+#in-app-notice {
+  background: rgba(248, 251, 255, 0.94);
+  border: 1px solid rgba(218, 227, 242, 0.96);
+  box-shadow: 0 18px 40px rgba(8, 20, 39, 0.2);
+}
+.login-logo {
+  border-radius: 34px;
+}
+.login-title {
+  color: #f7fbff;
+  text-shadow: 0 10px 28px rgba(5, 14, 28, 0.34);
+}
+.login-sub {
+  color: #d7e3f8;
+  text-shadow: 0 8px 24px rgba(5, 14, 28, 0.26);
+}
+.login-quote {
+  background: rgba(248, 251, 255, 0.96);
+  border-color: rgba(206, 218, 236, 0.96);
+  box-shadow: 0 22px 44px rgba(4, 12, 24, 0.18);
+}
+.login-quote-text {
+  color: #2a3d58;
+}
+.login-quote-author {
+  color: #5d6f8b;
+}
+.google-btn {
+  color: #0e1523;
+}
+.login-persist-label {
+  color: #23354f;
+  font-weight: 700;
+}
+#in-app-notice {
+  background: rgba(248, 251, 255, 0.96);
+  border-color: rgba(224, 197, 124, 0.34);
+}
+.ian-title {
+  color: #8f5f09;
+}
+.ian-text {
+  color: #36506f;
+}
+#modal-event {
+  background:
+    radial-gradient(circle at 14% 12%, rgba(57, 157, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 84% 82%, rgba(129, 106, 255, 0.18), transparent 26%),
+    linear-gradient(180deg, rgba(10, 22, 41, 0.97) 0%, rgba(12, 28, 51, 0.98) 100%);
+  box-shadow: 0 40px 80px rgba(3, 10, 22, 0.38);
+}
+#modal-event input[type="text"],
+#modal-event input[type="date"],
+#modal-event input[type="time"],
+#modal-event select,
+#modal-event textarea {
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-1) !important;
+  border: 1px solid rgba(163, 189, 239, 0.18) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 12px 24px rgba(3, 10, 22, 0.16);
+}
+#modal-event .header,
+#modal-event > div {
+  background: transparent;
+}
+#modal-event .header {
+  border-bottom: 1px solid rgba(163, 189, 239, 0.12);
+}
+#modal-event #ev-title {
+  border-bottom-color: rgba(163, 189, 239, 0.18) !important;
+}
+#modal-event #btn-modal-save {
+  background: linear-gradient(135deg, #1e8fff 0%, #59b5ff 100%) !important;
+  box-shadow: 0 18px 34px rgba(24, 135, 255, 0.26) !important;
+}
+#modal-event #btn-modal-delete {
+  background: rgba(255, 111, 132, 0.12) !important;
+  color: #ffbec8 !important;
+  border: 1px solid rgba(255, 111, 132, 0.16);
+}
+@media (min-width: 900px) {
+  #app {
+    max-width: none;
+    width: auto;
+    margin-left: 18px;
+    margin-right: 438px;
+    margin-bottom: 18px;
+    padding: 0;
+  }
+  #app-header {
+    padding-left: 146px;
+    padding-right: calc(438px + 16px);
+  }
+  #bottom-nav {
+    position: absolute;
+    top: 14px;
+    bottom: 14px;
+    left: 18px;
+    transform: none;
+    width: 84px;
+    max-width: none;
+    height: auto;
+    padding: 12px 8px;
+    padding-bottom: 12px;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  #pc-sidebar {
+    top: calc(var(--header-h) + var(--safe-t) + 14px);
+    right: 18px;
+    bottom: 18px;
+    border-radius: 28px;
+    overflow: hidden;
+  }
+  #screen-week,
+  #screen-month,
+  #screen-guide,
+  #screen-todo,
+  #screen-routine,
+  #screen-prayer,
+  #screen-day {
+    left: 116px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 0 10px 10px;
+  }
+  .nav-tab {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    gap: 7px;
+    padding: 9px 0;
+  }
+  .nav-tab-label {
+    font-size: 11px;
+  }
+  .nav-add {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 4px 0 6px;
+  }
+  .nav-add-circle {
+    margin-top: 0;
+    width: 50px;
+    height: 50px;
+  }
+  #btn-home {
+    display: none;
+  }
+}
+#bottom-nav {
+  background: linear-gradient(180deg, rgba(13, 28, 52, 0.94), rgba(8, 20, 39, 0.96));
+  border: 1px solid rgba(163, 189, 239, 0.14);
+  box-shadow: 0 22px 44px rgba(2, 8, 20, 0.34);
+}
+.nav-tab {
+  color: rgba(156, 184, 228, 0.74);
+}
+.nav-tab.active {
+  color: #65b7ff;
+}
+.nav-tab-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.nav-tab-icon {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.nav-tab:active .nav-tab-icon {
+  transform: scale(1.04);
+}
+.nav-add-circle {
+  background: linear-gradient(135deg, #1d8dff 0%, #54b8ff 100%);
+  color: #fff;
+  box-shadow: 0 18px 34px rgba(24, 135, 255, 0.3);
+}
 @media (max-width: 899px) {
   #bottom-nav {
     bottom: calc(var(--banner-h, 0px) + 10px);
     width: calc(100% - 22px);
     max-width: 458px;
     border-radius: 30px;
-    border: 1px solid rgba(210, 218, 229, 0.86);
-    box-shadow: 0 18px 38px rgba(86, 113, 145, 0.12);
+  }
+  .nav-tab-icon svg {
+    width: 30px;
+    height: 30px;
   }
   #app {
     padding: 0 10px;
@@ -1335,7 +2181,7 @@ body.login-locked #pc-sidebar {
         <span id="lbl-week-range" class="lbl-sub"></span>
         <span id="lbl-week-main" class="lbl-main"></span>
       </div>
-      <div style="display:flex;gap:4px">
+      <div id="week-header-actions" style="display:flex;gap:4px">
         <button id="btn-week-prev" class="nav-btn">❮</button>
         <button id="btn-week-today" class="nav-btn" style="font-size:12px;font-weight:700">오늘</button>
         <button id="btn-week-next" class="nav-btn">❯</button>
@@ -1441,33 +2287,299 @@ body.login-locked #pc-sidebar {
     <div class="prayer-list-wrap" id="prayer-list-wrap"></div>
   </div>
 
+  <!-- guide screen -->
+  <div id="screen-guide" class="screen hidden">
+    <header class="header guide-header">
+      <button id="btn-guide-close" class="header-back">✕</button>
+      <div class="period-label">
+        <span class="lbl-sub">Joyful Calendar Guide</span>
+        <span class="lbl-main">조이플 캘린더 특징과 사용법</span>
+      </div>
+      <div style="width:44px"></div>
+    </header>
+    <div class="guide-scroll">
+      <div class="guide-section-title">빠른 시작</div>
+      <section class="guide-grid">
+        <article class="guide-card blue">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip blue">1. 일정 입력</span>
+              <h3>새 일정은 짧게, 필요한 정보만</h3>
+            </div>
+            <div class="guide-emoji">📝</div>
+          </div>
+          <p>하단 `+` 버튼을 누르면 제목, 시작일, 시작 시간, 종료일, 반복 방식, 색상, 메모까지 한 번에 저장할 수 있습니다. 여러 날에 걸친 일정이나 매주 반복되는 모임도 같은 방식으로 관리할 수 있어요.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">입력 포인트</span><span class="guide-stat-value">날짜, 시간, 반복, 메모를 한 번에</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">추천 활용</span><span class="guide-stat-value">모임 일정, 준비물, 장소 기록</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>시작일과 종료일을 다르게 넣으면 기간 일정으로 저장됩니다.</li>
+            <li>반복을 `매주`, `매월`, `매년`으로 고르면 다음 일정이 자동 계산됩니다.</li>
+            <li>메모에는 준비물, 장소, 연락처처럼 바로 확인해야 할 내용을 적어두면 좋습니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card gold">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip gold">2. 보기 방식</span>
+              <h3>주간으로 보고, 일간에서 자세히 확인</h3>
+            </div>
+            <div class="guide-emoji">🔎</div>
+          </div>
+          <p>이 캘린더는 주간 흐름을 가장 먼저 보도록 설계되어 있습니다. 전체 리듬을 주간에서 파악하고, 특정 날짜를 눌러 일간 화면으로 들어가면 더 집중해서 볼 수 있습니다.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">기본 흐름</span><span class="guide-stat-value">주간 확인 후 일간 집중</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">잘 맞는 상황</span><span class="guide-stat-value">한 주 리듬을 빠르게 훑을 때</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>주간 화면에서는 위아래로 내리며 다음 주 일정까지 이어서 확인할 수 있습니다.</li>
+            <li>월간 화면은 큰 흐름이나 일정이 많은 달을 훑어볼 때 유용합니다.</li>
+            <li>일간 화면은 하루 일정과 메모를 또렷하게 확인하는 데 적합합니다.</li>
+          </ul>
+        </article>
+      </section>
+
+      <div class="guide-section-title">하단 기능별 안내</div>
+      <section class="guide-grid">
+        <article class="guide-card blue">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip blue">주간</span>
+              <h3>이번 주와 다음 흐름을 보는 메인 화면</h3>
+            </div>
+            <div class="guide-emoji">🗓️</div>
+          </div>
+          <p>주간 탭은 하루하루를 빠르게 비교하면서 일정 밀도를 읽는 데 가장 좋습니다. 아래로 계속 스크롤하면 다음 주들이 이어져서 장기 흐름도 자연스럽게 볼 수 있습니다.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">핵심 장점</span><span class="guide-stat-value">연속 주간 피드로 장기 흐름 파악</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">추천 사용자</span><span class="guide-stat-value">이번 주와 다음 주를 함께 보는 분</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>상단 날짜 스트립으로 오늘과 선택 날짜를 빠르게 바꿀 수 있습니다.</li>
+            <li>각 날짜 카드에서는 일정 제목, 시간, 반복 정보, 메모를 함께 확인할 수 있습니다.</li>
+            <li>가장 자주 여는 기본 화면으로 사용하기 좋습니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card slate">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip slate">월간</span>
+              <h3>한 달의 분위기와 몰림을 보는 화면</h3>
+            </div>
+            <div class="guide-emoji">📅</div>
+          </div>
+          <p>월간 탭은 일정이 어느 주에 몰려 있는지, 비어 있는 날이 언제인지 한눈에 볼 때 유용합니다. 일정이 많은 달의 리듬을 먼저 확인하고 상세한 확인은 일간으로 넘어가면 좋습니다.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">한눈 요약</span><span class="guide-stat-value">한 달의 밀도와 빈날 확인</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">잘 맞는 상황</span><span class="guide-stat-value">행사 시즌, 월 계획 점검</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>월간 셀에는 그 날짜의 핵심 일정이 짧게 표시됩니다.</li>
+            <li>특정 날짜를 탭하면 바로 일간 화면으로 이동합니다.</li>
+            <li>월 계획, 행사 시즌, 장기 일정 체크에 적합합니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card green">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip green">할일</span>
+              <h3>날짜와 분리된 실행 목록 관리</h3>
+            </div>
+            <div class="guide-emoji">✅</div>
+          </div>
+          <p>할 일 탭은 날짜를 꼭 지정하지 않아도 되는 실행 목록을 정리하는 공간입니다. 오늘 꼭 처리해야 하는 업무, 장보기, 전화하기 같은 작업을 빠르게 적고 완료 체크하면서 사용하세요.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">주요 기능</span><span class="guide-stat-value">빠른 추가, 체크, 완료 관리</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">추천 용도</span><span class="guide-stat-value">잡무, 체크리스트, 당일 실행</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>캘린더 일정과 별도로 즉시 추가하고 완료 처리할 수 있습니다.</li>
+            <li>오른쪽 데스크톱 사이드바에서도 같은 할 일을 빠르게 관리할 수 있습니다.</li>
+            <li>일정에 넣기 애매한 잔업이나 체크리스트를 정리할 때 좋습니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card indigo">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip indigo">루틴</span>
+              <h3>반복되는 생활 패턴을 따로 관리</h3>
+            </div>
+            <div class="guide-emoji">🔁</div>
+          </div>
+          <p>루틴 탭은 매일 또는 자주 반복되는 습관을 기록하는 곳입니다. 시간까지 함께 적어두면 하루의 리듬을 잡는 데 도움이 됩니다.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">리듬 관리</span><span class="guide-stat-value">시간 기반 습관을 한 번에 정리</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">예시</span><span class="guide-stat-value">운동, 예배 준비, 성경 읽기</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>예배 준비, 운동, 성경 읽기, 약 복용 같은 고정 패턴을 적어둘 수 있습니다.</li>
+            <li>우선순위를 조정해 자주 보는 루틴을 위로 올릴 수 있습니다.</li>
+            <li>일정과 다르게 습관성 행동을 관리하는 데 집중한 화면입니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card rose">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip rose">기도</span>
+              <h3>기도제목과 응답 기록을 남기는 공간</h3>
+            </div>
+            <div class="guide-emoji">🙏</div>
+          </div>
+          <p>기도 탭은 개인, 가족, 교회, 동역자 등 카테고리별로 기도 제목을 모아두고, 응답된 기도는 따로 표시해 기록을 이어갈 수 있도록 만든 기능입니다.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">기록 방식</span><span class="guide-stat-value">카테고리별 저장과 응답 추적</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">의미</span><span class="guide-stat-value">일정과 함께 영적 기록도 보존</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>현재 기도 중인 내용과 응답된 내용을 분리해서 볼 수 있습니다.</li>
+            <li>시간이 지나도 어떤 기도에 응답이 있었는지 남길 수 있습니다.</li>
+            <li>일정 관리와 함께 영적인 기록까지 같이 가져가고 싶을 때 유용합니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card gold">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip gold">일간</span>
+              <h3>선택한 하루를 또렷하게 집중해서 보기</h3>
+            </div>
+            <div class="guide-emoji">☀️</div>
+          </div>
+          <p>일간 화면은 해당 날짜에 들어 있는 일정만 모아서 보여줍니다. 일정 상세와 메모를 읽거나, 하루치 일정을 차분하게 정리할 때 가장 보기 좋은 화면입니다.</p>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">집중 포인트</span><span class="guide-stat-value">하루 일정만 선명하게 확인</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">잘 맞는 순간</span><span class="guide-stat-value">당일 계획을 정리할 때</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>주간이나 월간에서 날짜를 눌러 자연스럽게 이동합니다.</li>
+            <li>새 일정 추가 버튼이 상단에 있어 그날 기준으로 바로 입력할 수 있습니다.</li>
+            <li>당일 집중용 화면으로 사용하면 좋습니다.</li>
+          </ul>
+        </article>
+      </section>
+
+      <div class="guide-section-title">활용 팁</div>
+      <section class="guide-grid">
+        <article class="guide-card slate">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip slate">추천 사용 흐름</span>
+              <h3>가장 편한 사용 순서</h3>
+            </div>
+            <div class="guide-emoji">🚀</div>
+          </div>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">아침 루틴</span><span class="guide-stat-value">주간 확인 후 당일 실행 정리</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">기억법</span><span class="guide-stat-value">중요 일정엔 색상과 메모 사용</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>아침에는 주간 화면으로 오늘과 이번 주를 확인합니다.</li>
+            <li>바로 해야 할 작은 실행 항목은 할 일 탭에 적습니다.</li>
+            <li>반복되는 생활 패턴은 루틴 탭에 따로 관리합니다.</li>
+            <li>중요한 일정은 색상과 메모를 붙여 기억하기 쉽게 만듭니다.</li>
+          </ul>
+        </article>
+        <article class="guide-card blue">
+          <div class="guide-card-head">
+            <div class="guide-card-copy">
+              <span class="guide-chip blue">작은 팁</span>
+              <h3>더 잘 쓰는 방법</h3>
+            </div>
+            <div class="guide-emoji">✨</div>
+          </div>
+          <div class="guide-stat-row">
+            <div class="guide-stat"><span class="guide-stat-label">추천 규칙</span><span class="guide-stat-value">색상 기준을 미리 정해두기</span></div>
+            <div class="guide-stat"><span class="guide-stat-label">메모 활용</span><span class="guide-stat-value">장소, 준비물, 연락처만 간단히</span></div>
+          </div>
+          <ul class="guide-list">
+            <li>여러 날 일정은 시작일과 종료일을 정확히 넣어두면 놓치지 않습니다.</li>
+            <li>모임, 교회 일정, 개인 약속처럼 색상 기준을 미리 정해두면 훨씬 빨리 보입니다.</li>
+            <li>반복 일정은 새로 계속 만들지 말고 반복 옵션으로 관리하는 편이 깔끔합니다.</li>
+            <li>메모에는 장소, 준비물, 연락처처럼 바로 필요한 정보만 간단히 적는 것이 좋습니다.</li>
+          </ul>
+        </article>
+      </section>
+    </div>
+  </div>
+
   <!-- bottom nav -->
   <nav id="bottom-nav">
     <button class="nav-tab active" id="tab-week">
-      <span class="nav-tab-icon">🗓️</span>
+      <span class="nav-tab-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="15.5" rx="3"></rect>
+          <path d="M7.5 3.5v3"></path>
+          <path d="M16.5 3.5v3"></path>
+          <path d="M3.5 9.5h17"></path>
+          <path d="M8 13h3"></path>
+          <path d="M13 13h3"></path>
+          <path d="M8 17h3"></path>
+        </svg>
+      </span>
       <span class="nav-tab-label">주간</span>
     </button>
     <button class="nav-tab" id="tab-todo">
-      <span class="nav-tab-icon">✅</span>
+      <span class="nav-tab-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+          <path d="M8 12.5l2.5 2.5 5-5"></path>
+        </svg>
+      </span>
       <span class="nav-tab-label">할일</span>
     </button>
     <button class="nav-tab" id="tab-routine">
-      <span class="nav-tab-icon">🔄</span>
+      <span class="nav-tab-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 7h8a4 4 0 0 1 0 8H9"></path>
+          <path d="M7 7l2.5-2.5"></path>
+          <path d="M7 7l2.5 2.5"></path>
+          <path d="M17 17l-2.5 2.5"></path>
+          <path d="M17 17l-2.5-2.5"></path>
+        </svg>
+      </span>
       <span class="nav-tab-label">루틴</span>
     </button>
     <div class="nav-add">
       <button id="btn-global-add" class="nav-add-circle" aria-label="추가">＋</button>
     </div>
     <button class="nav-tab" id="tab-prayer">
-      <span class="nav-tab-icon">🙏</span>
+      <span class="nav-tab-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4.5c1.2 1.6 1.9 3.4 1.9 5.3v1.2"></path>
+          <path d="M10.1 11V9.8c0-1.9.7-3.7 1.9-5.3"></path>
+          <path d="M8.5 10.5l1.6 7.5"></path>
+          <path d="M15.5 10.5l-1.6 7.5"></path>
+          <path d="M10.1 18h3.8"></path>
+          <path d="M8 20h8"></path>
+        </svg>
+      </span>
       <span class="nav-tab-label">기도</span>
     </button>
     <button class="nav-tab" id="tab-day">
-      <span class="nav-tab-icon">📖</span>
+      <span class="nav-tab-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 5.5h8.5a2.5 2.5 0 0 1 2.5 2.5v10.5H8.5A2.5 2.5 0 0 0 6 21z"></path>
+          <path d="M6 5.5v15.5"></path>
+          <path d="M9 9h5"></path>
+          <path d="M9 12h5"></path>
+        </svg>
+      </span>
       <span class="nav-tab-label">일간</span>
     </button>
     <button class="nav-tab" id="tab-month">
-      <span class="nav-tab-icon">📅</span>
+      <span class="nav-tab-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="4.5" width="17" height="16" rx="3"></rect>
+          <path d="M7.5 3v3"></path>
+          <path d="M16.5 3v3"></path>
+          <path d="M3.5 9h17"></path>
+          <path d="M8 13h2"></path>
+          <path d="M12 13h2"></path>
+          <path d="M16 13h2"></path>
+          <path d="M8 17h2"></path>
+          <path d="M12 17h2"></path>
+        </svg>
+      </span>
       <span class="nav-tab-label">월간</span>
     </button>
   </nav>
@@ -1522,6 +2634,22 @@ body.login-locked #pc-sidebar {
         </select>
       </div>
       <div style="display:flex;align-items:center;gap:12px;color:var(--text-2);font-size:14px">
+        <span style="width:60px">카테고리</span>
+        <select id="ev-category" style="flex:1;background:var(--surface-2);border:1px solid var(--surface-border);border-radius:var(--r-sm);padding:8px 12px;color:var(--text-1);outline:none">
+          <option value="개인">개인</option>
+          <option value="교회">교회</option>
+          <option value="사역">사역</option>
+          <option value="미팅">미팅</option>
+          <option value="회의">회의</option>
+          <option value="예배">예배</option>
+          <option value="설교">설교</option>
+          <option value="집회">집회</option>
+          <option value="생일">생일</option>
+          <option value="결제">결제</option>
+          <option value="세미나">세미나</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;color:var(--text-2);font-size:14px">
         <span style="width:60px">색상</span>
         <div style="display:flex;gap:8px" id="ev-color-row"></div>
       </div>
@@ -1557,6 +2685,20 @@ body.login-locked #pc-sidebar {
   var editingEventId = null;
   var selectedColor = 'gold';
   const COLORS = ['rose','amber','jade','indigo','slate','gold'];
+  const EVENT_CATEGORY_OPTIONS = ['개인','교회','사역','미팅','회의','예배','설교','집회','생일','결제','세미나'];
+  const EVENT_CATEGORY_COLORS = {
+    '개인': 'jade',
+    '교회': 'indigo',
+    '사역': 'gold',
+    '미팅': 'slate',
+    '회의': 'amber',
+    '예배': 'gold',
+    '설교': 'rose',
+    '집회': 'indigo',
+    '생일': 'rose',
+    '결제': 'amber',
+    '세미나': 'slate'
+  };
   const REPEAT_LABELS = {
     none: '반복 안 함',
     weekly: '매주 반복',
@@ -1571,9 +2713,18 @@ body.login-locked #pc-sidebar {
     slate: '기타',
     gold: '중요'
   };
+  const LEGACY_CATEGORY_BY_COLOR = {
+    rose: '생일',
+    amber: '회의',
+    jade: '개인',
+    indigo: '교회',
+    slate: '미팅',
+    gold: '예배'
+  };
 
   const State = {
     view: 'week',
+    lastPrimaryView: 'week',
     selected: toISO(new Date()),
     weekAnchor: getWeekStart(new Date()),
     events: [],
@@ -1772,8 +2923,22 @@ body.login-locked #pc-sidebar {
     const note = formatEventNote(ev);
     return `<div class="todo-body"><div class="event-chip-row"><span class="event-chip event-chip-${ev.color||'gold'}">${getEventBadgeLabel(ev)}</span></div><div class="todo-title">${escapeHtml(ev.title)}</div><div class="todo-meta">${escapeHtml(formatEventMeta(ev))}</div>${note ? `<div class="todo-note">${escapeHtml(note)}</div>` : ''}</div>`;
   }
+  function normalizeEventCategory(category) {
+    return EVENT_CATEGORY_OPTIONS.includes(category) ? category : null;
+  }
+  function getEventCategory(ev) {
+    return normalizeEventCategory(ev.category) || normalizeEventCategory(LEGACY_CATEGORY_BY_COLOR[ev.color || '']) || '개인';
+  }
   function getEventBadgeLabel(ev) {
-    return EVENT_LABELS[ev.color || 'gold'] || '일정';
+    return normalizeEventCategory(ev.category) || EVENT_LABELS[ev.color || 'gold'] || '일정';
+  }
+  function updateEventColorSelection() {
+    const colorRow = $('ev-color-row');
+    if(!colorRow) return;
+    colorRow.querySelectorAll('button').forEach((btn, index) => {
+      btn.style.borderColor = COLORS[index] === selectedColor ? 'white' : 'transparent';
+      btn.style.transform = COLORS[index] === selectedColor ? 'scale(1.08)' : 'scale(1)';
+    });
   }
   function showToast(msg) {
     const t = $('toast');
@@ -1970,11 +3135,9 @@ body.login-locked #pc-sidebar {
       const iso = toISO(d);
       const col = document.createElement('div');
       col.className = `week-day-col ${iso===State.selected?'selected':''} ${iso===toISO(new Date())?'today':''}`;
-      const dots = getEventsForDate(iso).slice(0,3);
       col.innerHTML = `
         <div class="week-dow">${['일','월','화','수','목','금','토'][d.getDay()]}</div>
         <div class="week-date-num">${d.getDate()}</div>
-        <div class="week-dot-row">${dots.map(e=>`<div class="week-dot" style="background:var(--label-${e.color||'gold'})"></div>`).join('')}</div>
       `;
       col.onclick = () => { State.selected = iso; renderCurrentView(); };
       strip.appendChild(col);
@@ -2283,6 +3446,13 @@ body.login-locked #pc-sidebar {
     const { year, month } = State.cursor;
 
     let html = `<div class="sb-month-section">
+      <button class="sb-guide-btn" id="btn-sidebar-guide" type="button">
+        <span class="sb-guide-btn-copy">
+          <span class="sb-guide-btn-label">조이플 캘린더 특징과 사용법</span>
+          <span class="sb-guide-btn-sub">기능 소개와 추천 사용 흐름을 한 페이지로 정리했어요.</span>
+        </span>
+        <span class="sb-guide-btn-icon">?</span>
+      </button>
       <div class="sb-month-nav">
         <button class="sb-nav-btn" id="sb-btn-prev">‹</button>
         <span class="sb-month-lbl">${year}년 ${month}월</span>
@@ -2330,15 +3500,18 @@ body.login-locked #pc-sidebar {
 
     html += `</div></div>
     <div class="sb-banner-section">
-      <a class="sb-banner-link" href="/001.jpg" target="_blank"><img class="sb-banner-img" src="/001.jpg" alt="배너1" onerror="this.style.display='none'"></a>
-      <a class="sb-banner-link" href="/002.jpg" target="_blank"><img class="sb-banner-img" src="/002.jpg" alt="배너2" onerror="this.style.display='none'"></a>
+      <a class="sb-banner-link" href="https://sermon-five.vercel.app/" target="_blank" rel="noopener noreferrer">
+        <img class="sb-banner-img" src="/002.jpg" alt="설교 아카이브 배너" onerror="this.style.display='none'">
+      </a>
     </div>`;
 
     sidebar.innerHTML = html;
 
     // Sidebar handlers
+    const sbGuide = $('btn-sidebar-guide');
     const sbPrev = $('sb-btn-prev');
     const sbNext = $('sb-btn-next');
+    if(sbGuide) sbGuide.onclick = () => switchScreen('guide');
     if(sbPrev) sbPrev.onclick = () => moveCursor(-1);
     if(sbNext) sbNext.onclick = () => moveCursor(1);
 
@@ -2386,6 +3559,7 @@ body.login-locked #pc-sidebar {
     const repeat = ev ? getRepeatType(ev) : 'none';
     const startTime = ev ? (ev.startTime || '') : '';
     const note = ev ? (ev.note || '') : '';
+    const category = ev ? getEventCategory(ev) : '개인';
 
     $('modal-title-text').textContent = ev ? '일정 편집' : '새 일정';
     $('ev-title').value = ev ? ev.title : '';
@@ -2393,6 +3567,7 @@ body.login-locked #pc-sidebar {
     $('ev-start-time').value = startTime;
     $('ev-end-date').value = endDate;
     $('ev-repeat').value = repeat;
+    $('ev-category').value = category;
     $('ev-note').value = note;
     syncEventDateInputs();
     $('btn-modal-delete').style.display = ev ? 'block' : 'none';
@@ -2402,13 +3577,14 @@ body.login-locked #pc-sidebar {
     COLORS.forEach(c => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.style.cssText = `width:28px;height:28px;border-radius:50%;background:var(--label-${c});border:2.5px solid ${c===selectedColor?'white':'transparent'};transition:border-color 120ms;cursor:pointer;`;
+      btn.style.cssText = `width:28px;height:28px;border-radius:50%;background:var(--label-${c});border:2.5px solid transparent;transition:border-color 120ms,transform 120ms;cursor:pointer;`;
       btn.onclick = () => {
         selectedColor = c;
-        colorRow.querySelectorAll('button').forEach((b,i) => b.style.borderColor = COLORS[i]===c?'white':'transparent');
+        updateEventColorSelection();
       };
       colorRow.appendChild(btn);
     });
+    updateEventColorSelection();
 
     $('modal-event').classList.add('visible');
     setTimeout(() => $('ev-title').focus(), 150);
@@ -2446,11 +3622,12 @@ body.login-locked #pc-sidebar {
     const startTime = $('ev-start-time').value || '';
     const endDate = $('ev-end-date').value;
     const repeat = $('ev-repeat').value || 'none';
+    const category = $('ev-category').value || '개인';
     const note = $('ev-note').value.trim();
     if(!startDate || !endDate) { showToast('시작일과 종료일을 입력하세요'); return; }
     if(endDate < startDate) { showToast('종료일은 시작일보다 빠를 수 없어요'); return; }
 
-    const data = { title, startDate, startTime, endDate, repeat, note, date: startDate, color: selectedColor };
+    const data = { title, startDate, startTime, endDate, repeat, category, note, date: startDate, color: selectedColor };
     const col = db.collection('users').doc(currentUser.uid).collection('events');
 
     if(editingEventId) {
@@ -2474,7 +3651,8 @@ body.login-locked #pc-sidebar {
 
   // ── SCREEN SWITCH ────────────────────────────────
   function switchScreen(id) {
-    ['week','month','todo','day','routine','prayer'].forEach(s => {
+    if(id !== 'guide') State.lastPrimaryView = id;
+    ['week','month','todo','day','routine','prayer','guide'].forEach(s => {
       const el = $('screen-' + s);
       if(!el) return;
       if(s === id) { el.classList.remove('hidden'); if(s==='day') el.classList.add('visible'); }
@@ -2650,6 +3828,7 @@ body.login-locked #pc-sidebar {
   // Day screen
   $('btn-day-close').onclick = () => switchScreen('week');
   $('btn-day-add').onclick   = () => openEventModal(null);
+  $('btn-guide-close').onclick = () => switchScreen(State.lastPrimaryView || 'week');
 
   // Global add
   $('btn-global-add').onclick = () => openEventModal(null);
@@ -2658,6 +3837,13 @@ body.login-locked #pc-sidebar {
   $('btn-modal-close').onclick  = closeEventModal;
   $('btn-modal-save').onclick   = saveEvent;
   $('btn-modal-delete').onclick = deleteEvent;
+  $('ev-category').addEventListener('change', e => {
+    const mappedColor = EVENT_CATEGORY_COLORS[e.target.value];
+    if(mappedColor) {
+      selectedColor = mappedColor;
+      updateEventColorSelection();
+    }
+  });
   $('ev-start-date').addEventListener('change', () => syncEventDateInputs('start'));
   $('ev-end-date').addEventListener('change', () => syncEventDateInputs('end'));
 
