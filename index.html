@@ -157,10 +157,12 @@ input, textarea { font-family: inherit; }
   inset: 0;
   display: flex;
   flex-direction: column;
+  visibility: visible;
   transition: opacity 180ms ease, transform 240ms var(--ease-snap);
 }
 .screen.hidden {
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translateY(-6px);
 }
@@ -173,6 +175,23 @@ input, textarea { font-family: inherit; }
 #screen-guide {
   background: var(--surface-0);
   padding-bottom: calc(var(--nav-h) + var(--safe-b));
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(164, 187, 229, 0.42) rgba(255,255,255,0.04);
+}
+#screen-guide::-webkit-scrollbar {
+  width: 10px;
+}
+#screen-guide::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+}
+#screen-guide::-webkit-scrollbar-thumb {
+  background: rgba(164, 187, 229, 0.42);
+  border-radius: 999px;
+  border: 2px solid rgba(8, 16, 31, 0.88);
 }
 #screen-day {
   background: var(--surface-1);
@@ -182,6 +201,7 @@ input, textarea { font-family: inherit; }
 #screen-day.visible {
   transform: translateY(0);
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 #screen-day.hidden {
@@ -602,8 +622,7 @@ input, textarea { font-family: inherit; }
 
   /* ─── ROUTINE SCREEN ─────────────────────────────── */
   .routine-list-wrap { padding: 16px 20px 80px; overflow-y: auto; flex: 1; }
-  .routine-grid { display: grid; gap: 12px; }
-  @media (min-width: 600px) { .routine-grid { grid-template-columns: 1fr 1fr; } }
+  .routine-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
   .routine-item { display: flex; align-items: center; background: var(--surface-1); padding: 12px 16px; border-radius: var(--r-md); border: 1px solid var(--surface-border); gap: 12px; }
   .routine-num { width: 28px; height: 28px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--text-2); flex-shrink: 0; }
   .routine-title { flex: 1; font-size: 15px; font-weight: 600; color: var(--text-1); line-height: 1.4; word-break: break-all; }
@@ -635,206 +654,570 @@ input, textarea { font-family: inherit; }
 
   /* ─── GUIDE SCREEN ─────────────────────────────── */
   .guide-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px 8px calc(var(--nav-h) + var(--safe-b) + 32px);
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    padding: 10px 10px calc(var(--nav-h) + var(--safe-b) + 40px);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
   }
   .guide-header {
     padding-top: 22px;
     padding-bottom: 12px;
     align-items: flex-start;
   }
+  .guide-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .guide-share-btn {
+    pointer-events: auto;
+    min-width: 62px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(173, 192, 226, 0.16);
+    color: #eef4ff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    box-shadow: 0 10px 24px rgba(3, 10, 22, 0.16);
+  }
   .guide-header .period-label {
     padding-top: 2px;
   }
   .guide-header .lbl-sub {
     font-size: 11px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
   }
   .guide-header .lbl-main {
     font-size: 24px;
     line-height: 1.15;
   }
-  .guide-hero,
-  .guide-card {
-    background: rgba(248, 251, 255, 0.98);
-    border: 1px solid rgba(204, 216, 234, 0.92);
-    box-shadow: 0 18px 38px rgba(8, 18, 38, 0.18);
-    border-radius: 28px;
-  }
-  .guide-hero {
-    padding: 24px 20px;
+  .guide-shell {
     position: relative;
+    border-radius: 34px;
+    padding: 10px;
+    background:
+      radial-gradient(circle at 12% 10%, rgba(248, 146, 31, 0.16), transparent 22%),
+      radial-gradient(circle at 84% 14%, rgba(99, 160, 255, 0.16), transparent 20%),
+      linear-gradient(180deg, rgba(9, 19, 36, 0.98), rgba(8, 16, 31, 0.98));
+    border: 1px solid rgba(150, 173, 215, 0.16);
+    box-shadow: 0 30px 80px rgba(2, 8, 20, 0.42);
     overflow: hidden;
   }
-  .guide-hero::after {
-    content: "";
+  .guide-shell::before,
+  .guide-panel::before,
+  .guide-mini-card::before,
+  .guide-module-card::before,
+  .guide-tip-card::before {
+    content: '';
     position: absolute;
-    inset: auto -40px -56px auto;
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(122,108,255,0.16), rgba(122,108,255,0));
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
     pointer-events: none;
   }
+  .guide-hero-banner {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at top right, rgba(251, 146, 60, 0.24), transparent 26%),
+      linear-gradient(135deg, rgba(18, 33, 60, 0.94), rgba(11, 21, 40, 0.98));
+    border: 1px solid rgba(168, 188, 224, 0.16);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .guide-badge,
+  .guide-section-title,
   .guide-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
+    gap: 10px;
+    padding: 5px;
     border-radius: 999px;
-    background: rgba(57,182,255,0.12);
-    color: #2278a7;
+    background: rgba(251, 146, 60, 0.12);
+    border: 1px solid rgba(251, 146, 60, 0.24);
+    color: #ffd7b0;
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.04em;
-    margin-bottom: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    align-self: flex-start;
   }
-  .guide-hero h2,
-  .guide-card h3 {
-    margin: 0;
-    color: #1f3048;
-    letter-spacing: -0.04em;
+  .guide-kicker {
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: #f7c78f;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
   }
-  .guide-hero h2 {
-    font-size: 30px;
-    line-height: 1.15;
-  }
-  .guide-hero p,
-  .guide-card p,
-  .guide-card li {
-    color: #556b8d;
-    line-height: 1.7;
-  }
-  .guide-hero p {
-    font-size: 14px;
-    margin: 14px 0 0;
-    max-width: 560px;
-  }
-  .guide-pill-row {
+  .guide-section-title {
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: #f3c18a;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 18px;
+    align-items: baseline;
+    gap: 10px;
+    margin: 6px 0 4px;
+    text-transform: none;
   }
-  .guide-pill {
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(248, 250, 253, 0.95);
-    border: 1px solid rgba(210, 218, 229, 0.84);
-    color: var(--text-2);
-    font-size: 12px;
-    font-weight: 700;
+  .guide-kicker,
+  .guide-badge {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
   }
-  .guide-grid {
+  .guide-section-title-en {
+    font-size: 18px;
+    font-weight: 800;
+    color: #f5c691;
+    letter-spacing: 0.08em;
+  }
+  .guide-section-title-ko {
+    font-size: 17px;
+    font-weight: 800;
+    color: #edf4ff;
+    letter-spacing: -0.02em;
+  }
+  .guide-hero-grid,
+  .guide-layout,
+  .guide-split,
+  .guide-mini-grid,
+  .guide-module-grid,
+  .guide-tip-grid,
+  .guide-flow-track {
     display: grid;
-    gap: 16px;
+    gap: 10px;
   }
-  .guide-card {
-    padding: 20px;
+  .guide-hero-copy h2,
+  .guide-panel h3,
+  .guide-mini-card h3,
+  .guide-module-card h3,
+  .guide-tip-card h3 {
+    margin: 0;
+    letter-spacing: -0.05em;
   }
-  .guide-card-head {
+  .guide-hero-copy h2 {
+    font-size: 34px;
+    line-height: 1.08;
+    color: #f8fbff;
+    max-width: 640px;
+  }
+  .guide-gradient-text {
+    display: inline-block;
+    background: linear-gradient(135deg, #fff3d6 0%, #ffc27a 42%, #7ac5ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .guide-hero-copy p,
+  .guide-lead,
+  .guide-panel p,
+  .guide-mini-card p,
+  .guide-module-card p,
+  .guide-tip-card p,
+  .guide-flow-node span {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.68;
+    color: #afc0dc;
+  }
+  .guide-metric-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .guide-metric {
+    padding: 0 0 0 10px;
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 10px;
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    border-left: 2px dotted rgba(251, 146, 60, 0.42);
+    border-radius: 0;
   }
-  .guide-card-copy {
-    flex: 1;
-    min-width: 0;
+  .guide-metric-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 4px;
   }
-  .guide-card h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
+  .guide-metric-label {
+    display: block;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #aabbd8;
   }
-  .guide-card p { font-size: 14px; margin: 0 0 14px; }
-  .guide-emoji {
-    width: 54px;
-    height: 54px;
-    border-radius: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,245,255,0.88));
-    border: 1px solid rgba(210, 218, 229, 0.82);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 12px 24px rgba(86, 113, 145, 0.1);
-    flex-shrink: 0;
-  }
-  .guide-stat-row {
+  .guide-pills,
+  .guide-mini-metrics {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 0 0 14px;
   }
-  .guide-stat {
-    min-width: 120px;
-    padding: 10px 12px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(204, 216, 234, 0.92);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
-  }
-  .guide-stat-label {
-    display: block;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: #6f84a7;
-    margin-bottom: 5px;
-  }
-  .guide-stat-value {
-    display: block;
-    font-size: 13px;
+  .guide-pill,
+  .guide-mini-metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 0 0 10px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    border-left: 2px dotted rgba(173, 192, 226, 0.32);
+    color: #d6e3fb;
+    font-size: 12px;
     font-weight: 700;
-    color: #243754;
-    line-height: 1.4;
   }
-  .guide-list {
-    margin: 0;
-    padding-left: 18px;
+  .guide-section {
     display: grid;
-    gap: 8px;
-    font-size: 14px;
+    gap: 10px;
   }
-  .guide-chip {
+  .guide-hero-banner + .guide-section {
+    margin-top: 44px;
+  }
+  .guide-section + .guide-section {
+    margin-top: 44px;
+  }
+  .guide-panel,
+  .guide-module-card,
+  .guide-tip-card,
+  .guide-mini-card,
+  .guide-flow-band {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    border: 1px solid rgba(173, 192, 226, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .guide-panel,
+  .guide-module-card,
+  .guide-tip-card {
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(13, 25, 46, 0.96), rgba(10, 19, 35, 0.98));
+  }
+  .guide-panel-accent,
+  .guide-flow-band {
+    background:
+      radial-gradient(circle at top right, rgba(251, 146, 60, 0.16), transparent 24%),
+      linear-gradient(180deg, rgba(18, 32, 56, 0.98), rgba(10, 18, 34, 1));
+  }
+  .guide-panel h3,
+  .guide-mini-card h3,
+  .guide-module-card h3,
+  .guide-tip-card h3 {
+    font-size: 22px;
+    line-height: 1.18;
+    color: #f8fbff;
+    margin-bottom: 12px;
+  }
+  .guide-step-list,
+  .guide-feature-list {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .guide-step,
+  .guide-feature-list li {
+    position: relative;
+    padding: 13px 14px 13px 48px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(173, 192, 226, 0.12);
+    color: #dce7f9;
+    line-height: 1.6;
+  }
+  .guide-step-num,
+  .guide-feature-list li::before {
+    position: absolute;
+    left: 14px;
+    top: 13px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 7px 11px;
-    border-radius: 999px;
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #ea580c, #fb923c);
+    color: #fffdf8;
+    box-shadow: 0 10px 20px rgba(234, 88, 12, 0.2);
+  }
+  .guide-feature-list li::before {
+    content: '•';
+    font-size: 14px;
+  }
+  .guide-mini-card {
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(16, 29, 53, 0.98), rgba(9, 17, 31, 1));
+    min-height: 0;
+  }
+  .guide-mini-top,
+  .guide-module-top {
+    display: block;
+    margin-bottom: 12px;
+  }
+  .guide-mini-top > div:first-child,
+  .guide-module-top > div:first-child {
+    min-width: 0;
+    flex: 1;
+  }
+  .guide-icon-orb {
+    display: none;
+  }
+  .guide-module-meta {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(173, 192, 226, 0.1);
+    color: #f7c78f;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .guide-flow-band {
+    padding: 18px;
+  }
+  .guide-flow-node {
+    padding: 16px 16px 16px 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(173, 192, 226, 0.1);
+  }
+  .guide-flow-node strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #fff5e3;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  .guide-note {
+    padding: 16px 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.05);
+    border: 1px dashed rgba(244, 184, 114, 0.32);
+    color: #f4d7af;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .guide-line-label {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 10px;
+    border-left: 2px solid #fb923c;
+    color: #f7c78f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     margin-bottom: 10px;
   }
-  .guide-chip.blue { background: rgba(57,182,255,0.14); color: #2278a7; }
-  .guide-chip.gold { background: rgba(214,161,31,0.14); color: #9e6e10; }
-  .guide-chip.green { background: rgba(22,163,74,0.12); color: #1e7b43; }
-  .guide-chip.rose { background: rgba(224,92,106,0.12); color: #a43d53; }
-  .guide-chip.indigo { background: rgba(79,70,229,0.12); color: #4d43b8; }
-  .guide-chip.slate { background: rgba(100,116,139,0.14); color: #516172; }
-  .guide-card.blue .guide-emoji { background: linear-gradient(135deg, rgba(208,238,255,0.95), rgba(234,244,255,0.92)); }
-  .guide-card.gold .guide-emoji { background: linear-gradient(135deg, rgba(255,235,193,0.96), rgba(255,246,220,0.94)); }
-  .guide-card.green .guide-emoji { background: linear-gradient(135deg, rgba(216,246,228,0.96), rgba(236,251,242,0.94)); }
-  .guide-card.rose .guide-emoji { background: linear-gradient(135deg, rgba(255,223,228,0.96), rgba(255,241,243,0.94)); }
-  .guide-card.indigo .guide-emoji { background: linear-gradient(135deg, rgba(226,226,255,0.96), rgba(240,239,255,0.94)); }
-  .guide-card.slate .guide-emoji { background: linear-gradient(135deg, rgba(231,237,245,0.96), rgba(244,247,251,0.94)); }
-  .guide-section-title {
-    font-size: 13px;
+  .guide-block-title {
+    display: grid;
+    gap: 5px;
+    margin: 4px 0 0;
+  }
+  .guide-block-title-en {
+    font-size: 18px;
     font-weight: 800;
-    letter-spacing: 0.05em;
-    color: #a9bcdd;
-    padding: 4px 6px 0;
+    color: #f5c691;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .guide-block-title-ko {
+    font-size: 17px;
+    font-weight: 800;
+    color: #edf4ff;
+    letter-spacing: -0.02em;
+  }
+  .guide-preview-grid,
+  .guide-compact-grid,
+  .guide-flow-strip {
+    display: grid;
+    gap: 10px;
+  }
+  .guide-preview-card,
+  .guide-compact-card,
+  .guide-flow-step {
+    position: relative;
+    overflow: hidden;
+    padding: 0 0 14px;
+    border: none;
+    border-bottom: 1px dotted rgba(173, 192, 226, 0.3);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .guide-preview-card {
+    padding: 0;
+    border-bottom: none;
+  }
+  .guide-preview-window {
+    display: none;
+    padding: 0;
+    margin: 0;
+  }
+  .guide-preview-card h3,
+  .guide-compact-card h3,
+  .guide-flow-step h3 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    line-height: 1.35;
+    color: #f8fbff;
+    letter-spacing: -0.04em;
+  }
+  .guide-preview-card p,
+  .guide-compact-card p,
+  .guide-flow-step p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.68;
+    color: #afc0dc;
+  }
+  .guide-preview-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .guide-preview-weekdays span,
+  .guide-preview-month span {
+    display: block;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 2px dotted rgba(173, 192, 226, 0.34);
+  }
+  .guide-preview-weekdays span {
+    height: 10px;
+  }
+  .guide-preview-list {
+    display: grid;
+    gap: 10px;
+  }
+  .guide-preview-list div,
+  .guide-preview-columns span,
+  .guide-preview-checks div {
+    min-height: 14px;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 2px dotted rgba(173, 192, 226, 0.34);
+  }
+  .guide-preview-list div:nth-child(1) { width: 100%; }
+  .guide-preview-list div:nth-child(2) { width: 82%; }
+  .guide-preview-list div:nth-child(3) { width: 68%; }
+  .guide-preview-month {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .guide-preview-month span {
+    height: 14px;
+  }
+  .guide-preview-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .guide-preview-columns span {
+    height: 80px;
+  }
+  .guide-preview-checks {
+    display: grid;
+    gap: 10px;
+  }
+  .guide-preview-checks div {
+    height: 18px;
+  }
+  .guide-table-wrap {
+    overflow-x: auto;
+    border: none;
+    border-top: 1px dotted rgba(173, 192, 226, 0.24);
+    border-bottom: 1px dotted rgba(173, 192, 226, 0.24);
+    border-radius: 0;
+    background: transparent;
+  }
+  .guide-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+  }
+  .guide-table th,
+  .guide-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px dotted rgba(173, 192, 226, 0.2);
+    vertical-align: top;
+  }
+  .guide-table th {
+    color: #f5c691;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .guide-table td {
+    color: #dce7f9;
+    font-size: 14px;
+    line-height: 1.62;
+  }
+  .guide-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .guide-flow-strip {
+    grid-template-columns: 1fr;
+  }
+  .guide-flow-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ea580c, #fb923c);
+    color: #fffdf8;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 10px 20px rgba(234, 88, 12, 0.2);
+  }
+  .guide-mini-table {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .guide-mini-row {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px dotted rgba(173, 192, 226, 0.24);
+  }
+  .guide-mini-row:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+  .guide-mini-row strong {
+    color: #f5c691;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .guide-mini-row span {
+    color: #dce7f9;
+    font-size: 14px;
+    line-height: 1.62;
   }
   @media (min-width: 900px) {
-    .guide-grid {
-      grid-template-columns: 1fr 1fr;
-    }
     .guide-header {
       padding-top: 26px;
       padding-bottom: 16px;
@@ -842,8 +1225,31 @@ input, textarea { font-family: inherit; }
     .guide-header .lbl-main {
       font-size: 22px;
     }
-    .guide-scroll {
-      padding-top: 0;
+    .guide-shell {
+      padding: 10px;
+    }
+    .guide-hero-grid {
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.85fr);
+      align-items: end;
+    }
+    .guide-layout {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: start;
+    }
+    .guide-mini-grid,
+    .guide-tip-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .guide-module-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .guide-flow-track {
+      grid-template-columns: 1fr 1fr;
+    }
+    .guide-preview-grid,
+    .guide-compact-grid,
+    .guide-flow-strip {
+      grid-template-columns: 1fr 1fr;
     }
   }
 
@@ -1634,6 +2040,9 @@ body::after {
 #screen-prayer {
   padding: 0 14px 14px;
 }
+#screen-month {
+  padding-bottom: calc(var(--nav-h) + var(--safe-b) + 18px);
+}
 #screen-day {
   background: linear-gradient(180deg, rgba(10, 20, 38, 0.98), rgba(12, 27, 50, 0.98));
   border-left: 1px solid rgba(163, 189, 239, 0.18);
@@ -1980,6 +2389,22 @@ body::after {
   border: 1px solid rgba(163, 189, 239, 0.18) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 12px 24px rgba(3, 10, 22, 0.16);
 }
+#modal-event input[type="date"],
+#modal-event input[type="time"],
+#modal-event select {
+  color-scheme: dark;
+  cursor: pointer;
+}
+#modal-event input[type="date"]::-webkit-calendar-picker-indicator,
+#modal-event input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.9);
+  opacity: 0.92;
+}
+#modal-event select option,
+#modal-event select optgroup {
+  color: #0f1a2e;
+  background: #f4f8ff;
+}
 #modal-event .header,
 #modal-event > div {
   background: transparent;
@@ -2295,209 +2720,199 @@ body::after {
         <span class="lbl-sub">Joyful Calendar Guide</span>
         <span class="lbl-main">조이플 캘린더 특징과 사용법</span>
       </div>
-      <div style="width:44px"></div>
+      <div class="guide-header-actions">
+        <button id="btn-guide-share" class="guide-share-btn" type="button">공유</button>
+      </div>
     </header>
     <div class="guide-scroll">
-      <div class="guide-section-title">빠른 시작</div>
-      <section class="guide-grid">
-        <article class="guide-card blue">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip blue">1. 일정 입력</span>
-              <h3>새 일정은 짧게, 필요한 정보만</h3>
+      <section class="guide-shell">
+        <section class="guide-hero-banner">
+          <div class="guide-line-label">Joyful Guide · 조이플 가이드</div>
+          <div class="guide-hero-grid">
+            <div class="guide-hero-copy">
+              <h2>조이플 캘린더는 <span class="guide-gradient-text">흐름 확인</span>과 <span class="guide-gradient-text">실행 정리</span>를 함께 하는 캘린더입니다</h2>
+              <p>텍스트를 길게 읽지 않아도 되도록, 화면 미리보기와 요약 표 중심으로 다시 정리했습니다. 주간에서 흐름을 보고, 일간에서 집중하고, 할일·루틴·기도는 따로 분리해 운영하는 구조입니다.</p>
             </div>
-            <div class="guide-emoji">📝</div>
-          </div>
-          <p>하단 `+` 버튼을 누르면 제목, 시작일, 시작 시간, 종료일, 반복 방식, 색상, 메모까지 한 번에 저장할 수 있습니다. 여러 날에 걸친 일정이나 매주 반복되는 모임도 같은 방식으로 관리할 수 있어요.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">입력 포인트</span><span class="guide-stat-value">날짜, 시간, 반복, 메모를 한 번에</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">추천 활용</span><span class="guide-stat-value">모임 일정, 준비물, 장소 기록</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>시작일과 종료일을 다르게 넣으면 기간 일정으로 저장됩니다.</li>
-            <li>반복을 `매주`, `매월`, `매년`으로 고르면 다음 일정이 자동 계산됩니다.</li>
-            <li>메모에는 준비물, 장소, 연락처처럼 바로 확인해야 할 내용을 적어두면 좋습니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card gold">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip gold">2. 보기 방식</span>
-              <h3>주간으로 보고, 일간에서 자세히 확인</h3>
+            <div class="guide-metric-row">
+              <div class="guide-metric">
+                <span class="guide-metric-value">WEEK</span>
+                <span class="guide-metric-label">기본 메인 화면</span>
+              </div>
+              <div class="guide-metric">
+                <span class="guide-metric-value">DAY</span>
+                <span class="guide-metric-label">당일 집중 화면</span>
+              </div>
+              <div class="guide-metric">
+                <span class="guide-metric-value">REPEAT</span>
+                <span class="guide-metric-label">반복 일정 자동 관리</span>
+              </div>
+              <div class="guide-metric">
+                <span class="guide-metric-value">NOTE</span>
+                <span class="guide-metric-label">시간 · 메모 · 카테고리 저장</span>
+              </div>
             </div>
-            <div class="guide-emoji">🔎</div>
           </div>
-          <p>이 캘린더는 주간 흐름을 가장 먼저 보도록 설계되어 있습니다. 전체 리듬을 주간에서 파악하고, 특정 날짜를 눌러 일간 화면으로 들어가면 더 집중해서 볼 수 있습니다.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">기본 흐름</span><span class="guide-stat-value">주간 확인 후 일간 집중</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">잘 맞는 상황</span><span class="guide-stat-value">한 주 리듬을 빠르게 훑을 때</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>주간 화면에서는 위아래로 내리며 다음 주 일정까지 이어서 확인할 수 있습니다.</li>
-            <li>월간 화면은 큰 흐름이나 일정이 많은 달을 훑어볼 때 유용합니다.</li>
-            <li>일간 화면은 하루 일정과 메모를 또렷하게 확인하는 데 적합합니다.</li>
-          </ul>
-        </article>
-      </section>
+        </section>
 
-      <div class="guide-section-title">하단 기능별 안내</div>
-      <section class="guide-grid">
-        <article class="guide-card blue">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip blue">주간</span>
-              <h3>이번 주와 다음 흐름을 보는 메인 화면</h3>
-            </div>
-            <div class="guide-emoji">🗓️</div>
+        <section class="guide-section">
+          <div class="guide-block-title">
+            <span class="guide-block-title-en">Preview</span>
+            <span class="guide-block-title-ko">화면 미리보기</span>
           </div>
-          <p>주간 탭은 하루하루를 빠르게 비교하면서 일정 밀도를 읽는 데 가장 좋습니다. 아래로 계속 스크롤하면 다음 주들이 이어져서 장기 흐름도 자연스럽게 볼 수 있습니다.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">핵심 장점</span><span class="guide-stat-value">연속 주간 피드로 장기 흐름 파악</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">추천 사용자</span><span class="guide-stat-value">이번 주와 다음 주를 함께 보는 분</span></div>
+          <div class="guide-preview-grid">
+            <article class="guide-preview-card">
+              <div class="guide-line-label">Week View · 주간 화면</div>
+              <div class="guide-preview-window">
+                <div class="guide-preview-weekdays">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="guide-preview-list">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+              <h3>이번 주와 다음 흐름을 먼저 확인</h3>
+              <p>조이플 캘린더의 기본 메인 화면입니다. 가장 먼저 들어와서 일정 밀도와 흐름을 보는 용도예요.</p>
+            </article>
+            <article class="guide-preview-card">
+              <div class="guide-line-label">Month View · 월간 화면</div>
+              <div class="guide-preview-window">
+                <div class="guide-preview-month">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+              <h3>한 달의 바쁜 주와 빈 날을 한눈에</h3>
+              <p>행사 시즌, 월초 계획, 장기 일정 확인처럼 넓은 범위로 훑어볼 때 가장 편합니다.</p>
+            </article>
+            <article class="guide-preview-card">
+              <div class="guide-line-label">Manage · 관리 화면</div>
+              <div class="guide-preview-window">
+                <div class="guide-preview-columns">
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="guide-preview-checks">
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+              <h3>할일, 루틴, 기도를 따로 분리해서 정리</h3>
+              <p>캘린더 안에 모든 걸 넣지 않고, 실행 목록과 반복 습관, 영적 기록을 목적별로 나눠 운영합니다.</p>
+            </article>
           </div>
-          <ul class="guide-list">
-            <li>상단 날짜 스트립으로 오늘과 선택 날짜를 빠르게 바꿀 수 있습니다.</li>
-            <li>각 날짜 카드에서는 일정 제목, 시간, 반복 정보, 메모를 함께 확인할 수 있습니다.</li>
-            <li>가장 자주 여는 기본 화면으로 사용하기 좋습니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card slate">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip slate">월간</span>
-              <h3>한 달의 분위기와 몰림을 보는 화면</h3>
-            </div>
-            <div class="guide-emoji">📅</div>
-          </div>
-          <p>월간 탭은 일정이 어느 주에 몰려 있는지, 비어 있는 날이 언제인지 한눈에 볼 때 유용합니다. 일정이 많은 달의 리듬을 먼저 확인하고 상세한 확인은 일간으로 넘어가면 좋습니다.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">한눈 요약</span><span class="guide-stat-value">한 달의 밀도와 빈날 확인</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">잘 맞는 상황</span><span class="guide-stat-value">행사 시즌, 월 계획 점검</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>월간 셀에는 그 날짜의 핵심 일정이 짧게 표시됩니다.</li>
-            <li>특정 날짜를 탭하면 바로 일간 화면으로 이동합니다.</li>
-            <li>월 계획, 행사 시즌, 장기 일정 체크에 적합합니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card green">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip green">할일</span>
-              <h3>날짜와 분리된 실행 목록 관리</h3>
-            </div>
-            <div class="guide-emoji">✅</div>
-          </div>
-          <p>할 일 탭은 날짜를 꼭 지정하지 않아도 되는 실행 목록을 정리하는 공간입니다. 오늘 꼭 처리해야 하는 업무, 장보기, 전화하기 같은 작업을 빠르게 적고 완료 체크하면서 사용하세요.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">주요 기능</span><span class="guide-stat-value">빠른 추가, 체크, 완료 관리</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">추천 용도</span><span class="guide-stat-value">잡무, 체크리스트, 당일 실행</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>캘린더 일정과 별도로 즉시 추가하고 완료 처리할 수 있습니다.</li>
-            <li>오른쪽 데스크톱 사이드바에서도 같은 할 일을 빠르게 관리할 수 있습니다.</li>
-            <li>일정에 넣기 애매한 잔업이나 체크리스트를 정리할 때 좋습니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card indigo">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip indigo">루틴</span>
-              <h3>반복되는 생활 패턴을 따로 관리</h3>
-            </div>
-            <div class="guide-emoji">🔁</div>
-          </div>
-          <p>루틴 탭은 매일 또는 자주 반복되는 습관을 기록하는 곳입니다. 시간까지 함께 적어두면 하루의 리듬을 잡는 데 도움이 됩니다.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">리듬 관리</span><span class="guide-stat-value">시간 기반 습관을 한 번에 정리</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">예시</span><span class="guide-stat-value">운동, 예배 준비, 성경 읽기</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>예배 준비, 운동, 성경 읽기, 약 복용 같은 고정 패턴을 적어둘 수 있습니다.</li>
-            <li>우선순위를 조정해 자주 보는 루틴을 위로 올릴 수 있습니다.</li>
-            <li>일정과 다르게 습관성 행동을 관리하는 데 집중한 화면입니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card rose">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip rose">기도</span>
-              <h3>기도제목과 응답 기록을 남기는 공간</h3>
-            </div>
-            <div class="guide-emoji">🙏</div>
-          </div>
-          <p>기도 탭은 개인, 가족, 교회, 동역자 등 카테고리별로 기도 제목을 모아두고, 응답된 기도는 따로 표시해 기록을 이어갈 수 있도록 만든 기능입니다.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">기록 방식</span><span class="guide-stat-value">카테고리별 저장과 응답 추적</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">의미</span><span class="guide-stat-value">일정과 함께 영적 기록도 보존</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>현재 기도 중인 내용과 응답된 내용을 분리해서 볼 수 있습니다.</li>
-            <li>시간이 지나도 어떤 기도에 응답이 있었는지 남길 수 있습니다.</li>
-            <li>일정 관리와 함께 영적인 기록까지 같이 가져가고 싶을 때 유용합니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card gold">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip gold">일간</span>
-              <h3>선택한 하루를 또렷하게 집중해서 보기</h3>
-            </div>
-            <div class="guide-emoji">☀️</div>
-          </div>
-          <p>일간 화면은 해당 날짜에 들어 있는 일정만 모아서 보여줍니다. 일정 상세와 메모를 읽거나, 하루치 일정을 차분하게 정리할 때 가장 보기 좋은 화면입니다.</p>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">집중 포인트</span><span class="guide-stat-value">하루 일정만 선명하게 확인</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">잘 맞는 순간</span><span class="guide-stat-value">당일 계획을 정리할 때</span></div>
-          </div>
-          <ul class="guide-list">
-            <li>주간이나 월간에서 날짜를 눌러 자연스럽게 이동합니다.</li>
-            <li>새 일정 추가 버튼이 상단에 있어 그날 기준으로 바로 입력할 수 있습니다.</li>
-            <li>당일 집중용 화면으로 사용하면 좋습니다.</li>
-          </ul>
-        </article>
-      </section>
+        </section>
 
-      <div class="guide-section-title">활용 팁</div>
-      <section class="guide-grid">
-        <article class="guide-card slate">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip slate">추천 사용 흐름</span>
-              <h3>가장 편한 사용 순서</h3>
-            </div>
-            <div class="guide-emoji">🚀</div>
+        <section class="guide-section">
+          <div class="guide-block-title">
+            <span class="guide-block-title-en">Screen Map</span>
+            <span class="guide-block-title-ko">화면별 요약 표</span>
           </div>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">아침 루틴</span><span class="guide-stat-value">주간 확인 후 당일 실행 정리</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">기억법</span><span class="guide-stat-value">중요 일정엔 색상과 메모 사용</span></div>
+          <div class="guide-table-wrap">
+            <table class="guide-table">
+              <thead>
+                <tr>
+                  <th>화면</th>
+                  <th>언제</th>
+                  <th>핵심</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>주간</td>
+                  <td>매일 아침</td>
+                  <td>이번 주와 다음 주 흐름 확인</td>
+                </tr>
+                <tr>
+                  <td>월간</td>
+                  <td>월초 · 행사 전</td>
+                  <td>바쁜 주와 빈 날 한눈에 보기</td>
+                </tr>
+                <tr>
+                  <td>할일</td>
+                  <td>바로 실행할 일</td>
+                  <td>날짜 없는 체크리스트 정리</td>
+                </tr>
+                <tr>
+                  <td>루틴</td>
+                  <td>반복되는 생활</td>
+                  <td>시간 있는 습관 따로 관리</td>
+                </tr>
+                <tr>
+                  <td>기도</td>
+                  <td>기록이 필요한 제목</td>
+                  <td>응답까지 이어서 보관</td>
+                </tr>
+                <tr>
+                  <td>일간</td>
+                  <td>당일 집중</td>
+                  <td>시간 · 메모 · 준비물 확인</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <ul class="guide-list">
-            <li>아침에는 주간 화면으로 오늘과 이번 주를 확인합니다.</li>
-            <li>바로 해야 할 작은 실행 항목은 할 일 탭에 적습니다.</li>
-            <li>반복되는 생활 패턴은 루틴 탭에 따로 관리합니다.</li>
-            <li>중요한 일정은 색상과 메모를 붙여 기억하기 쉽게 만듭니다.</li>
-          </ul>
-        </article>
-        <article class="guide-card blue">
-          <div class="guide-card-head">
-            <div class="guide-card-copy">
-              <span class="guide-chip blue">작은 팁</span>
-              <h3>더 잘 쓰는 방법</h3>
-            </div>
-            <div class="guide-emoji">✨</div>
+        </section>
+
+        <section class="guide-section">
+          <div class="guide-block-title">
+            <span class="guide-block-title-en">Best Flow</span>
+            <span class="guide-block-title-ko">추천 사용 흐름</span>
           </div>
-          <div class="guide-stat-row">
-            <div class="guide-stat"><span class="guide-stat-label">추천 규칙</span><span class="guide-stat-value">색상 기준을 미리 정해두기</span></div>
-            <div class="guide-stat"><span class="guide-stat-label">메모 활용</span><span class="guide-stat-value">장소, 준비물, 연락처만 간단히</span></div>
+          <div class="guide-flow-strip">
+            <article class="guide-flow-step">
+              <span class="guide-flow-step-num">1</span>
+              <h3>입력</h3>
+              <p>플러스 버튼으로 일정 제목, 날짜, 시간, 메모를 먼저 저장합니다.</p>
+            </article>
+            <article class="guide-flow-step">
+              <span class="guide-flow-step-num">2</span>
+              <h3>확인</h3>
+              <p>주간 화면에서 이번 주와 다음 주의 흐름을 먼저 확인합니다.</p>
+            </article>
+            <article class="guide-flow-step">
+              <span class="guide-flow-step-num">3</span>
+              <h3>분리</h3>
+              <p>할일, 루틴, 기도는 목적별로 나눠서 따로 운영합니다.</p>
+            </article>
+            <article class="guide-flow-step">
+              <span class="guide-flow-step-num">4</span>
+              <h3>집중</h3>
+              <p>당일에는 일간 화면에서 시간과 메모만 보며 실행합니다.</p>
+            </article>
           </div>
-          <ul class="guide-list">
-            <li>여러 날 일정은 시작일과 종료일을 정확히 넣어두면 놓치지 않습니다.</li>
-            <li>모임, 교회 일정, 개인 약속처럼 색상 기준을 미리 정해두면 훨씬 빨리 보입니다.</li>
-            <li>반복 일정은 새로 계속 만들지 말고 반복 옵션으로 관리하는 편이 깔끔합니다.</li>
-            <li>메모에는 장소, 준비물, 연락처처럼 바로 필요한 정보만 간단히 적는 것이 좋습니다.</li>
-          </ul>
-        </article>
+        </section>
+
+        <section class="guide-section">
+          <div class="guide-block-title">
+            <span class="guide-block-title-en">Input & Tips</span>
+            <span class="guide-block-title-ko">입력 포인트와 운영 팁</span>
+          </div>
+          <div class="guide-compact-grid">
+            <article class="guide-compact-card">
+              <div class="guide-line-label">Event Input · 일정 입력</div>
+              <h3>새 일정 입력은 이렇게 정리하면 됩니다</h3>
+              <div class="guide-mini-table">
+                <div class="guide-mini-row"><strong>기간</strong><span>하루를 넘으면 시작일과 종료일을 함께 넣습니다.</span></div>
+                <div class="guide-mini-row"><strong>시간</strong><span>중요한 일정만 시작 시간을 넣어도 흐름 파악이 쉬워집니다.</span></div>
+                <div class="guide-mini-row"><strong>반복</strong><span>예배, 회의, 모임은 매주·매월·매년 반복으로 관리합니다.</span></div>
+                <div class="guide-mini-row"><strong>메모</strong><span>장소, 준비물, 연락처처럼 바로 필요한 정보만 적습니다.</span></div>
+              </div>
+            </article>
+            <article class="guide-compact-card">
+              <div class="guide-line-label">Operation Tip · 운영 팁</div>
+              <h3>조이플 캘린더를 더 깔끔하게 쓰는 방법</h3>
+              <div class="guide-mini-table">
+                <div class="guide-mini-row"><strong>색상</strong><span>교회, 사역, 개인 기준을 미리 정해두면 한눈에 읽힙니다.</span></div>
+                <div class="guide-mini-row"><strong>루틴</strong><span>반복 습관은 일정에 섞지 말고 루틴 탭으로 분리합니다.</span></div>
+                <div class="guide-mini-row"><strong>기도</strong><span>응답이 필요한 제목은 기도 탭에 남겨 흐름을 이어갑니다.</span></div>
+                <div class="guide-mini-row"><strong>공유</strong><span>상단 공유 버튼으로 이 안내 페이지를 바로 전달할 수 있습니다.</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
       </section>
     </div>
   </div>
@@ -2730,6 +3145,52 @@ body::after {
     events: [],
     cursor: { year: new Date().getFullYear(), month: new Date().getMonth() + 1 }
   };
+  function getRequestedScreenFromUrl() {
+    const hash = (window.location.hash || '').replace('#', '').trim();
+    return hash === 'guide' ? 'guide' : null;
+  }
+  function syncScreenUrl(id) {
+    const url = new URL(window.location.href);
+    if(id === 'guide') url.hash = 'guide';
+    else if(url.hash === '#guide') url.hash = '';
+    history.replaceState(null, '', url.toString());
+  }
+  function getGuideShareUrl() {
+    const url = new URL(window.location.href);
+    url.hash = 'guide';
+    return url.toString();
+  }
+  async function shareGuidePage() {
+    const shareUrl = getGuideShareUrl();
+    const shareData = {
+      title: '조이플 캘린더 특징과 사용법',
+      text: '조이플 캘린더의 기능과 사용 흐름을 정리한 안내 페이지입니다.',
+      url: shareUrl
+    };
+    if(navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (e) {
+        if(e && e.name === 'AbortError') return;
+      }
+    }
+    if(navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => showToast('가이드 링크를 복사했습니다'))
+        .catch(() => window.prompt('가이드 링크를 복사하세요', shareUrl));
+      return;
+    }
+    window.prompt('가이드 링크를 복사하세요', shareUrl);
+  }
+  function openNativePicker(input) {
+    if(!input || typeof input.showPicker !== 'function') return;
+    try { input.showPicker(); } catch (_) {}
+  }
+  function openHeaderTitleTarget() {
+    if(window.innerWidth < 900) switchScreen('guide');
+    else switchScreen('week');
+  }
   const WeekFeedState = {
     startOffset: 0,
     endOffset: 3,
@@ -2860,7 +3321,13 @@ body::after {
   function eventOccursOn(ev, iso) {
     return !!getOccurrenceForDate(ev, iso);
   }
+  function getEventSortTime(ev) {
+    const value = String(ev.startTime || '').trim();
+    return /^\d{2}:\d{2}$/.test(value) ? value : '99:99';
+  }
   function compareEvents(a, b) {
+    const timeCmp = getEventSortTime(a).localeCompare(getEventSortTime(b));
+    if(timeCmp !== 0) return timeCmp;
     const startCmp = (a._occurrence?.start || getEventStartISO(a)).localeCompare(b._occurrence?.start || getEventStartISO(b));
     if(startCmp !== 0) return startCmp;
     const endCmp = (a._occurrence?.end || getEventEndISO(a)).localeCompare(b._occurrence?.end || getEventEndISO(b));
@@ -2983,7 +3450,7 @@ body::after {
       _listenersStarted = true;
       startListeners(user.uid);
     }
-    switchScreen('week');
+    switchScreen(getRequestedScreenFromUrl() || 'week');
   }
 
   function normalizeLocalAuthHost() {
@@ -3659,6 +4126,7 @@ body::after {
       else         { el.classList.add('hidden');    if(s==='day') el.classList.remove('visible'); }
     });
     State.view = id;
+    syncScreenUrl(id);
     renderCurrentView();
     updateNav();
   }
@@ -3798,7 +4266,13 @@ body::after {
   $('btn-user-avatar').onclick  = () => $('user-menu').classList.toggle('hidden');
   $('btn-signout').onclick      = () => auth.signOut();
   $('btn-home').onclick         = () => switchScreen('week');
-  $('btn-logo-home').onclick    = () => switchScreen('week');
+  $('btn-logo-home').onclick    = openHeaderTitleTarget;
+  $('btn-logo-home').onkeydown  = e => {
+    if(e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openHeaderTitleTarget();
+    }
+  };
 
   // In-app banner: 배너 클릭 → 외부 브라우저 이동
   const bannerEl = $('global-in-app-banner');
@@ -3829,6 +4303,7 @@ body::after {
   $('btn-day-close').onclick = () => switchScreen('week');
   $('btn-day-add').onclick   = () => openEventModal(null);
   $('btn-guide-close').onclick = () => switchScreen(State.lastPrimaryView || 'week');
+  $('btn-guide-share').onclick = shareGuidePage;
 
   // Global add
   $('btn-global-add').onclick = () => openEventModal(null);
@@ -3843,6 +4318,12 @@ body::after {
       selectedColor = mappedColor;
       updateEventColorSelection();
     }
+  });
+  ['ev-start-date', 'ev-end-date', 'ev-start-time'].forEach(id => {
+    const input = $(id);
+    if(!input) return;
+    input.addEventListener('click', () => openNativePicker(input));
+    input.addEventListener('focus', () => openNativePicker(input));
   });
   $('ev-start-date').addEventListener('change', () => syncEventDateInputs('start'));
   $('ev-end-date').addEventListener('change', () => syncEventDateInputs('end'));
