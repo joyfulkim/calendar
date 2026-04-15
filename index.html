@@ -650,6 +650,13 @@ input, textarea { font-family: inherit; }
   .prayer-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--surface-border); padding-top: 12px; }
   .prayer-date { font-size: 12px; color: var(--text-3); }
   .btn-answer { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 4px; background: var(--surface-3); color: var(--text-2); border: 1px solid var(--surface-border); cursor: pointer; }
+  .btn-prayer-edit { font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 4px; background: transparent; color: var(--text-3); border: 1px solid var(--surface-border); cursor: pointer; margin-right: 6px; }
+  .btn-prayer-edit:active { background: var(--surface-2); }
+  .prayer-edit-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .prayer-edit-input { width: 100%; font-size: 14px; line-height: 1.5; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--accent); background: var(--surface-1); color: var(--text-1); resize: none; }
+  .prayer-edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-prayer-save { font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 4px; background: var(--accent); color: var(--text-inv); border: none; cursor: pointer; }
+  .btn-prayer-cancel { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 4px; background: var(--surface-3); color: var(--text-2); border: 1px solid var(--surface-border); cursor: pointer; }
   .prayer-item.answered .prayer-title { color: var(--text-3); }
 
   /* ─── GUIDE SCREEN ─────────────────────────────── */
@@ -1296,7 +1303,7 @@ input[type="date"], input[type="time"] { color-scheme: light; }
 .login-logo { font-size: 72px; margin-bottom: 24px; line-height: 1; }
 .login-title {
   font-size: 28px; font-weight: 800; letter-spacing: -0.04em;
-  color: var(--text-1); margin-bottom: 8px; text-align: center;
+  color: #ffffff; margin-bottom: 8px; text-align: center;
 }
 .login-sub {
   font-size: 15px; color: var(--text-3); margin-bottom: 28px;
@@ -1304,7 +1311,7 @@ input[type="date"], input[type="time"] { color-scheme: light; }
 }
 .login-quote {
   max-width: 320px; width: 100%;
-  background: var(--surface-2);
+  background: transparent;
   border: 1px solid var(--surface-border);
   border-left: 3px solid var(--accent);
   border-radius: 12px;
@@ -1358,6 +1365,349 @@ input[type="date"], input[type="time"] { color-scheme: light; }
   font-size: 16px; transition: transform 200ms;
 }
 .hdr-refresh-btn:active { transform: rotate(-180deg) scale(0.9); background: var(--surface-border); }
+
+/* ─── HEADER THEME TOGGLE ─────────────────────── */
+.hdr-theme-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; pointer-events: auto;
+  transition: transform 150ms, box-shadow 150ms;
+}
+.hdr-theme-btn:active { transform: scale(0.9); }
+
+/* ─── LIGHT THEME (전체) ──────────────────────────── */
+body.theme-light {
+  --surface-0: #f6f8fb;
+  --surface-1: #ffffff;
+  --surface-2: #eef2f7;
+  --surface-3: #e1e8f0;
+  --surface-border: #d2dae5;
+  --accent: #d6a11f;
+  --accent-dim: #b48312;
+  --accent-glow: rgba(214,161,31,0.22);
+  --text-1: #18212f;
+  --text-2: #556274;
+  --text-3: #8a95a5;
+  --text-inv: #18212f;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255,169,187,0.34), transparent 24%),
+    radial-gradient(circle at 92% 6%, rgba(123,214,255,0.32), transparent 24%),
+    radial-gradient(circle at 16% 92%, rgba(255,220,117,0.24), transparent 20%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 45%, #eef5ff 100%);
+  color: var(--text-1);
+}
+body.theme-light::before {
+  top: -90px; left: -120px; right: auto; bottom: auto;
+  width: 220px; height: 220px;
+  background: rgba(255,170,185,0.7); opacity: 0.42;
+}
+body.theme-light::after {
+  right: -120px; top: -70px; left: auto; bottom: auto;
+  width: 220px; height: 220px;
+  background: rgba(126,214,255,0.7); opacity: 0.42;
+}
+body.theme-light #app-header {
+  background: linear-gradient(180deg, rgba(28,38,58,0.96), rgba(44,56,80,0.86));
+  border-bottom: 1px solid rgba(176,195,229,0.16);
+  box-shadow: none;
+}
+body.theme-light .app-hdr-btn,
+body.theme-light .hdr-refresh-btn,
+body.theme-light .hdr-theme-btn,
+body.theme-light .sb-nav-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(180,197,228,0.18);
+  box-shadow: 0 10px 24px rgba(8,15,31,0.18);
+  color: rgba(244,247,255,0.92);
+}
+body.theme-light .header-back {
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(232,85,154,0.3);
+  box-shadow: 0 4px 12px rgba(240,85,152,0.12);
+  color: #e8559a;
+}
+body.theme-light .nav-btn,
+body.theme-light .week-nav-arrow {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(232,85,154,0.25);
+  box-shadow: 0 4px 12px rgba(240,85,152,0.12);
+  color: #e8559a;
+}
+body.theme-light .app-hdr-logo { color: #f7f9ff; text-shadow: none; }
+body.theme-light .app-hdr-logo-icon {
+  background: none;
+  box-shadow: none;
+}
+body.theme-light #app {
+  background: transparent;
+  border: none; border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  margin-top: calc(var(--header-h) + var(--safe-t));
+  height: calc(100dvh - var(--header-h) - var(--safe-t));
+}
+body.theme-light #screen-day {
+  background: var(--surface-0);
+  border-left: none;
+}
+body.theme-light .week-nav-bar,
+body.theme-light .weekdays {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 2px 8px rgba(30,50,80,0.06);
+}
+body.theme-light .week-day-col {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: none;
+}
+body.theme-light .week-day-col.selected {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+body.theme-light .week-day-col.today .week-date-num,
+body.theme-light .cal-cell.today .day-num,
+body.theme-light .sb-cal-cell.today .sb-day-num {
+  background: linear-gradient(135deg, #d6a11f 0%, #f0c84a 100%);
+  box-shadow: 0 4px 12px rgba(214,161,31,0.28);
+}
+body.theme-light .week-day-col.selected:not(.today) .week-date-num {
+  outline-color: var(--accent);
+}
+body.theme-light .week-block-label { color: var(--text-3); }
+body.theme-light .week-list-day-empty,
+body.theme-light .todo-empty,
+body.theme-light .routine-empty {
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+  color: var(--text-3);
+}
+body.theme-light .todo-item,
+body.theme-light .routine-item,
+body.theme-light .prayer-item {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 2px 8px rgba(30,50,80,0.05);
+}
+body.theme-light .todo-note {
+  background: var(--surface-2);
+  border-color: var(--surface-border);
+  color: var(--text-2);
+}
+body.theme-light .todo-check,
+body.theme-light .sb-todo-check {
+  background: transparent;
+  border-color: var(--surface-border);
+  box-shadow: none;
+}
+body.theme-light .todo-del { background: transparent; color: var(--text-3); }
+body.theme-light .todo-add-row,
+body.theme-light .prayer-add-row {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: none;
+}
+body.theme-light .prayer-tab-row {
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+}
+body.theme-light .prayer-tab.active {
+  background: var(--surface-1);
+  color: var(--text-1);
+  box-shadow: 0 2px 6px rgba(30,50,80,0.1);
+}
+body.theme-light #cal-grid {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  border-top: none;
+}
+body.theme-light .cal-cell {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--surface-border);
+  border-radius: 0; box-shadow: none;
+}
+body.theme-light .cal-cell.selected {
+  background: rgba(214,161,31,0.1);
+  border-color: rgba(214,161,31,0.3);
+  box-shadow: none;
+}
+body.theme-light .cal-cell.other-month .day-num { color: var(--text-3); opacity: 0.5; }
+body.theme-light .week-events-wrap,
+body.theme-light .todo-list-wrap,
+body.theme-light .routine-list-wrap,
+body.theme-light .prayer-list-wrap,
+body.theme-light .guide-scroll {
+  scrollbar-color: var(--surface-border) transparent;
+}
+body.theme-light #pc-sidebar {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 4px 20px rgba(30,50,80,0.08);
+}
+body.theme-light .sb-guide-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+  box-shadow: none;
+}
+body.theme-light .sb-guide-btn-icon,
+body.theme-light .sb-todo-add-btn,
+body.theme-light .todo-add-btn,
+body.theme-light #btn-day-add,
+body.theme-light .nav-add-circle {
+  background: var(--accent);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+body.theme-light .sb-cal-cell { background: transparent; border: 1px solid transparent; }
+body.theme-light .sb-cal-cell.selected {
+  background: rgba(214,161,31,0.12);
+  outline: 1px solid rgba(214,161,31,0.4);
+}
+body.theme-light .sb-todo-item {
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+}
+body.theme-light .sb-banner-link {
+  background: var(--surface-2);
+  border-color: var(--surface-border);
+}
+body.theme-light #user-menu {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(30,50,80,0.12);
+}
+body.theme-light .user-menu-info { border-bottom: 1px solid var(--surface-border); }
+body.theme-light .user-signout-btn { color: #e05c6a; }
+body.theme-light .user-signout-btn:active { background: var(--surface-2); }
+body.theme-light #modal-event {
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,248,253,0.98) 100%);
+  box-shadow: 0 8px 40px rgba(30,50,80,0.16);
+}
+body.theme-light #modal-event input[type="text"],
+body.theme-light #modal-event input[type="date"],
+body.theme-light #modal-event input[type="time"],
+body.theme-light #modal-event select,
+body.theme-light #modal-event textarea {
+  background: rgba(255,255,255,0.9) !important;
+  color: var(--text-1) !important;
+  border: 1px solid var(--surface-border) !important;
+  box-shadow: none;
+}
+body.theme-light #modal-event input[type="date"],
+body.theme-light #modal-event input[type="time"],
+body.theme-light #modal-event select { color-scheme: light; }
+body.theme-light #modal-event input[type="date"]::-webkit-calendar-picker-indicator,
+body.theme-light #modal-event input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: none; opacity: 0.6;
+}
+body.theme-light #modal-event #ev-title { border-bottom-color: var(--surface-border) !important; }
+body.theme-light #modal-event #btn-modal-save {
+  background: linear-gradient(135deg, #d6a11f 0%, #f0c84a 100%) !important;
+  box-shadow: 0 6px 20px rgba(214,161,31,0.28) !important;
+}
+body.theme-light #modal-event #btn-modal-delete {
+  background: rgba(224,92,106,0.08) !important;
+  color: #e05c6a !important;
+  border: 1px solid rgba(224,92,106,0.2);
+}
+body.theme-light .login-title { color: var(--text-1); text-shadow: none; }
+body.theme-light .login-sub { color: var(--text-2); text-shadow: none; }
+body.theme-light .login-quote {
+  border: 1px solid var(--surface-border);
+  border-left: 3px solid var(--accent);
+}
+body.theme-light .login-quote-text { color: var(--text-2); }
+body.theme-light .login-quote-author { color: var(--text-3); }
+body.theme-light .login-persist-label { color: var(--text-2); font-weight: 500; }
+
+/* ─── 계절별 네비게이션 색상 ─────────────────────── */
+/* 봄 🌸 */
+body.season-spring .nav-tab { color: rgba(220, 130, 170, 0.65); }
+body.season-spring .nav-tab.active { color: #e8559a; }
+body.season-spring .nav-add-circle {
+  background: linear-gradient(135deg, #f05598 0%, #ffaacb 100%);
+  box-shadow: 0 8px 24px rgba(240, 85, 152, 0.38);
+  color: #fff;
+}
+body.season-spring .sb-guide-btn-icon,
+body.season-spring .sb-todo-add-btn,
+body.season-spring .todo-add-btn,
+body.season-spring #btn-day-add {
+  background: linear-gradient(135deg, #f05598 0%, #ffaacb 100%);
+  box-shadow: 0 8px 24px rgba(240, 85, 152, 0.35);
+}
+
+/* 여름 🌊 */
+body.season-summer .nav-tab { color: rgba(80, 185, 230, 0.65); }
+body.season-summer .nav-tab.active { color: #18b8f0; }
+body.season-summer .nav-add-circle {
+  background: linear-gradient(135deg, #18b8f0 0%, #78e0ff 100%);
+  box-shadow: 0 8px 24px rgba(24, 184, 240, 0.38);
+  color: #fff;
+}
+body.season-summer .sb-guide-btn-icon,
+body.season-summer .sb-todo-add-btn,
+body.season-summer .todo-add-btn,
+body.season-summer #btn-day-add {
+  background: linear-gradient(135deg, #18b8f0 0%, #78e0ff 100%);
+  box-shadow: 0 8px 24px rgba(24, 184, 240, 0.35);
+}
+
+/* 가을 🍂 */
+body.season-autumn .nav-tab { color: rgba(210, 115, 45, 0.65); }
+body.season-autumn .nav-tab.active { color: #e06820; }
+body.season-autumn .nav-add-circle {
+  background: linear-gradient(135deg, #e06820 0%, #ffb558 100%);
+  box-shadow: 0 8px 24px rgba(224, 104, 32, 0.38);
+  color: #fff;
+}
+body.season-autumn .sb-guide-btn-icon,
+body.season-autumn .sb-todo-add-btn,
+body.season-autumn .todo-add-btn,
+body.season-autumn #btn-day-add {
+  background: linear-gradient(135deg, #e06820 0%, #ffb558 100%);
+  box-shadow: 0 8px 24px rgba(224, 104, 32, 0.35);
+}
+
+/* 겨울 ❄️ */
+body.season-winter .nav-tab { color: rgba(100, 148, 220, 0.65); }
+body.season-winter .nav-tab.active { color: #6090e0; }
+body.season-winter .nav-add-circle {
+  background: linear-gradient(135deg, #6090e0 0%, #b4d0f8 100%);
+  box-shadow: 0 8px 24px rgba(96, 144, 224, 0.38);
+  color: #fff;
+}
+body.season-winter .sb-guide-btn-icon,
+body.season-winter .sb-todo-add-btn,
+body.season-winter .todo-add-btn,
+body.season-winter #btn-day-add {
+  background: linear-gradient(135deg, #6090e0 0%, #b4d0f8 100%);
+  box-shadow: 0 8px 24px rgba(96, 144, 224, 0.35);
+}
+
+body.theme-light #bottom-nav {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 4px 20px rgba(30,50,80,0.08);
+}
+body.theme-light .nav-tab { color: var(--text-3); }
+body.theme-light .nav-tab.active { color: #e8559a; position: relative; }
+body.theme-light .nav-tab.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 15%; bottom: 15%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #e8559a;
+}
+body.theme-light .nav-add-circle {
+  background: linear-gradient(135deg, #f05598 0%, #ffaacb 100%);
+  box-shadow: 0 8px 24px rgba(240, 85, 152, 0.38);
+  color: #fff;
+}
 
 /* 인앱 브라우저 안내 */
 #in-app-notice {
@@ -1632,8 +1982,8 @@ body.login-locked #pc-sidebar {
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255,166,188,0.95), rgba(255,214,94,0.92));
+  border-radius: 0;
+  background: none;
   box-shadow: 0 8px 18px rgba(10, 16, 29, 0.24);
 }
 #app {
@@ -1858,6 +2208,7 @@ body.login-locked #pc-sidebar {
 .sb-banner-link {
   background: transparent;
 }
+/* ─── 계절 공통 ─────────────────────────────────── */
 #login-screen {
   background:
     radial-gradient(circle at 15% 10%, rgba(255, 183, 192, 0.56), transparent 24%),
@@ -1877,24 +2228,183 @@ body.login-locked #pc-sidebar {
   pointer-events: none;
 }
 #login-screen::before {
-  top: -90px;
-  left: -120px;
+  top: -90px; left: -120px;
   background: rgba(255, 170, 185, 0.7);
 }
 #login-screen::after {
-  right: -120px;
-  top: -70px;
+  right: -120px; top: -70px;
   background: rgba(126, 214, 255, 0.7);
 }
+
+/* ─── 봄 (3~5월) 🌸 ──────────────────────────── */
+#login-screen.season-spring {
+  background:
+    radial-gradient(circle at 18% 8%,  rgba(255, 182, 210, 0.72), transparent 28%),
+    radial-gradient(circle at 82% 12%, rgba(255, 214, 230, 0.60), transparent 26%),
+    radial-gradient(circle at 10% 88%, rgba(255, 200, 220, 0.50), transparent 24%),
+    radial-gradient(circle at 78% 82%, rgba(255, 235, 245, 0.55), transparent 22%),
+    linear-gradient(160deg, #fff0f5 0%, #ffe4ef 40%, #fff8fb 100%);
+}
+#login-screen.season-spring::before {
+  background: rgba(255, 150, 190, 0.75);
+  top: -80px; left: -100px;
+}
+#login-screen.season-spring::after {
+  background: rgba(255, 190, 215, 0.65);
+  right: -100px; top: -60px;
+}
+#login-screen.season-spring .season-emoji::before { content: '🌸'; }
+
+/* ─── 여름 (6~8월) 🌊 ──────────────────────────── */
+#login-screen.season-summer {
+  background:
+    radial-gradient(circle at 14% 10%, rgba(100, 210, 255, 0.65), transparent 28%),
+    radial-gradient(circle at 84% 8%,  rgba(56,  182, 255, 0.55), transparent 26%),
+    radial-gradient(circle at 8%  85%, rgba(130, 225, 255, 0.48), transparent 24%),
+    radial-gradient(circle at 80% 80%, rgba(180, 240, 255, 0.50), transparent 22%),
+    linear-gradient(160deg, #e8f8ff 0%, #c8edff 40%, #f0fbff 100%);
+}
+#login-screen.season-summer::before {
+  background: rgba(56, 190, 255, 0.70);
+  top: -80px; left: -100px;
+}
+#login-screen.season-summer::after {
+  background: rgba(120, 220, 255, 0.60);
+  right: -100px; top: -60px;
+}
+#login-screen.season-summer .season-emoji::before { content: '🌊'; }
+
+/* ─── 가을 (9~11월) 🍂 ──────────────────────────── */
+#login-screen.season-autumn {
+  background:
+    radial-gradient(circle at 16% 10%, rgba(255, 160, 80,  0.65), transparent 28%),
+    radial-gradient(circle at 82% 10%, rgba(230, 120, 60,  0.55), transparent 26%),
+    radial-gradient(circle at 10% 86%, rgba(255, 190, 100, 0.50), transparent 24%),
+    radial-gradient(circle at 80% 82%, rgba(240, 170, 90,  0.48), transparent 22%),
+    linear-gradient(160deg, #fff4e8 0%, #ffe0c0 40%, #fff8f0 100%);
+}
+#login-screen.season-autumn::before {
+  background: rgba(230, 120, 50, 0.72);
+  top: -80px; left: -100px;
+}
+#login-screen.season-autumn::after {
+  background: rgba(255, 170, 80, 0.60);
+  right: -100px; top: -60px;
+}
+#login-screen.season-autumn .season-emoji::before { content: '🍂'; }
+
+/* ─── 겨울 (12~2월) ❄️ ──────────────────────────── */
+#login-screen.season-winter {
+  background:
+    radial-gradient(circle at 16% 10%, rgba(200, 225, 255, 0.65), transparent 28%),
+    radial-gradient(circle at 82% 10%, rgba(220, 235, 255, 0.58), transparent 26%),
+    radial-gradient(circle at 10% 86%, rgba(210, 230, 255, 0.50), transparent 24%),
+    radial-gradient(circle at 80% 82%, rgba(240, 246, 255, 0.55), transparent 22%),
+    linear-gradient(160deg, #f4f8ff 0%, #e8f0ff 40%, #ffffff 100%);
+}
+#login-screen.season-winter::before {
+  background: rgba(180, 210, 255, 0.72);
+  top: -80px; left: -100px;
+}
+#login-screen.season-winter::after {
+  background: rgba(210, 230, 255, 0.62);
+  right: -100px; top: -60px;
+}
+#login-screen.season-winter .season-emoji::before { content: '❄️'; }
+
+/* 계절 이모지 배지 */
+.season-emoji {
+  position: absolute;
+  top: 22px; right: 22px;
+  font-size: 26px;
+  opacity: 0.75;
+  pointer-events: none;
+  line-height: 1;
+}
+.season-emoji::before { content: '🌸'; }
+
+/* ─── 계절 공통 텍스트 (밝은 배경용) ────────────── */
+#login-screen.season-spring .login-title,
+#login-screen.season-summer .login-title,
+#login-screen.season-autumn .login-title,
+#login-screen.season-winter .login-title {
+  text-shadow: none;
+}
+#login-screen.season-spring .login-sub,
+#login-screen.season-summer .login-sub,
+#login-screen.season-autumn .login-sub,
+#login-screen.season-winter .login-sub {
+  text-shadow: none;
+}
+#login-screen.season-spring .login-persist-label,
+#login-screen.season-summer .login-persist-label,
+#login-screen.season-autumn .login-persist-label,
+#login-screen.season-winter .login-persist-label {
+  font-weight: 600;
+}
+
+/* 봄 텍스트 */
+#login-screen.season-spring .login-title    { color: #7b2d52; }
+#login-screen.season-spring .login-sub      { color: #8a4466; }
+#login-screen.season-spring .login-quote    { border-left-color: #d4689a; border-color: rgba(212,104,154,0.35); }
+#login-screen.season-spring .login-quote-text   { color: #5c3049; }
+#login-screen.season-spring .login-quote-author { color: #9a5575; }
+#login-screen.season-spring .login-persist-label { color: #7b3a5a; }
+
+/* 여름 텍스트 */
+#login-screen.season-summer .login-title    { color: #0a4870; }
+#login-screen.season-summer .login-sub      { color: #1a6090; }
+#login-screen.season-summer .login-quote    { border-left-color: #2897d4; border-color: rgba(40,151,212,0.35); }
+#login-screen.season-summer .login-quote-text   { color: #0d3d60; }
+#login-screen.season-summer .login-quote-author { color: #2e6e9a; }
+#login-screen.season-summer .login-persist-label { color: #1a5278; }
+
+/* 가을 텍스트 */
+#login-screen.season-autumn .login-title    { color: #6b3000; }
+#login-screen.season-autumn .login-sub      { color: #8a4a10; }
+#login-screen.season-autumn .login-quote    { border-left-color: #d4702a; border-color: rgba(212,112,42,0.35); }
+#login-screen.season-autumn .login-quote-text   { color: #5c3200; }
+#login-screen.season-autumn .login-quote-author { color: #9a5a20; }
+#login-screen.season-autumn .login-persist-label { color: #7a4010; }
+
+/* 겨울 텍스트 */
+#login-screen.season-winter .login-title    { color: #1e3258; }
+#login-screen.season-winter .login-sub      { color: #2e4870; }
+#login-screen.season-winter .login-quote    { border-left-color: #5a88c8; border-color: rgba(90,136,200,0.35); }
+#login-screen.season-winter .login-quote-text   { color: #243a5e; }
+#login-screen.season-winter .login-quote-author { color: #4a6890; }
+#login-screen.season-winter .login-persist-label { color: #2e4870; }
+
+/* ─── 계절 장식 공통 ──────────────────────────────── */
+/* 떨어지는 파티클 */
+.login-particle {
+  position: absolute; pointer-events: none; z-index: 3;
+  animation: particleFall linear infinite;
+  opacity: 0;
+}
+@keyframes particleFall {
+  0%   { transform: translateY(-30px) rotate(0deg) translateX(0); opacity: 0; }
+  8%   { opacity: 1; }
+  88%  { opacity: 0.7; }
+  100% { transform: translateY(105vh) rotate(600deg) translateX(var(--pdrift, 50px)); opacity: 0; }
+}
+@keyframes snowFall {
+  0%   { transform: translateY(-20px) translateX(0) scale(1); opacity: 0; }
+  8%   { opacity: 0.85; }
+  50%  { transform: translateY(50vh) translateX(var(--pdrift, 30px)) scale(0.9); }
+  88%  { opacity: 0.6; }
+  100% { transform: translateY(105vh) translateX(calc(var(--pdrift, 30px) * -0.5)) scale(0.8); opacity: 0; }
+}
+@keyframes leafSway {
+  0%   { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0; }
+  8%   { opacity: 0.9; }
+  25%  { transform: translateY(25vh) rotate(180deg) translateX(var(--pdrift, 40px)); }
+  50%  { transform: translateY(50vh) rotate(360deg) translateX(0); }
+  75%  { transform: translateY(75vh) rotate(540deg) translateX(var(--pdrift, 40px)); }
+  88%  { opacity: 0.7; }
+  100% { transform: translateY(105vh) rotate(720deg) translateX(0); opacity: 0; }
+}
 .login-logo {
-  width: 118px;
-  height: 118px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 32px;
-  background: rgba(255,255,255,0.92);
-  box-shadow: 0 20px 48px rgba(86, 113, 145, 0.14);
   margin-bottom: 28px;
 }
 .login-title {
@@ -1907,10 +2417,10 @@ body.login-locked #pc-sidebar {
   margin-bottom: 22px;
 }
 .login-quote {
-  background: rgba(255,255,255,0.76);
-  border: 1px solid rgba(210, 218, 229, 0.8);
-  border-left: none;
-  box-shadow: 0 18px 34px rgba(86, 113, 145, 0.08);
+  background: transparent;
+  border: 1px solid rgba(180, 200, 230, 0.7);
+  border-left: 3px solid var(--accent);
+  box-shadow: none;
   margin-bottom: 28px;
 }
 .google-btn {
@@ -1921,9 +2431,7 @@ body.login-locked #pc-sidebar {
   padding: 16px 28px;
 }
 .login-persist {
-  background: rgba(255,255,255,0.7);
-  padding: 8px 14px;
-  border-radius: 999px;
+  background: transparent;
 }
 #in-app-notice {
   background: rgba(255,255,255,0.86);
@@ -2019,8 +2527,8 @@ body::after {
   text-shadow: 0 1px 0 rgba(0,0,0,0.18);
 }
 .app-hdr-logo-icon {
-  background: linear-gradient(135deg, rgba(60,166,255,0.98), rgba(128,106,255,0.9));
-  box-shadow: 0 10px 24px rgba(9, 22, 44, 0.3);
+  background: none;
+  box-shadow: none;
 }
 #app {
   background: linear-gradient(180deg, rgba(10, 20, 38, 0.7), rgba(11, 24, 45, 0.88));
@@ -2324,17 +2832,12 @@ body::after {
 #login-screen::after {
   background: rgba(120, 108, 255, 0.3);
 }
-.login-logo,
 .login-quote,
 .google-btn,
-.login-persist,
 #in-app-notice {
   background: rgba(248, 251, 255, 0.94);
   border: 1px solid rgba(218, 227, 242, 0.96);
   box-shadow: 0 18px 40px rgba(8, 20, 39, 0.2);
-}
-.login-logo {
-  border-radius: 34px;
 }
 .login-title {
   color: #f7fbff;
@@ -2345,21 +2848,22 @@ body::after {
   text-shadow: 0 8px 24px rgba(5, 14, 28, 0.26);
 }
 .login-quote {
-  background: rgba(248, 251, 255, 0.96);
-  border-color: rgba(206, 218, 236, 0.96);
-  box-shadow: 0 22px 44px rgba(4, 12, 24, 0.18);
+  background: transparent;
+  border: 1px solid rgba(100, 150, 230, 0.4);
+  border-left: 3px solid rgba(99, 160, 255, 0.85);
+  box-shadow: none;
 }
 .login-quote-text {
-  color: #2a3d58;
+  color: rgba(200, 225, 255, 0.92);
 }
 .login-quote-author {
-  color: #5d6f8b;
+  color: rgba(130, 170, 220, 0.78);
 }
 .google-btn {
   color: #0e1523;
 }
 .login-persist-label {
-  color: #23354f;
+  color: rgba(255, 255, 255, 0.88);
   font-weight: 700;
 }
 #in-app-notice {
@@ -2563,6 +3067,12 @@ body::after {
     <span>JOYFUL CALENDAR</span>
   </div>
   <div class="app-hdr-right">
+    <button id="btn-hdr-theme" class="app-hdr-btn hdr-theme-btn" title="헤더 색상 변경" aria-label="헤더 색상 변경" style="margin-right:4px;">
+      <svg id="ic-hdr-theme" width="20" height="20" viewBox="0 0 20 20">
+        <circle cx="10" cy="10" r="9" fill="#ffffff" stroke="rgba(180,200,230,0.5)" stroke-width="1"/>
+        <path d="M10 1 A9 9 0 0 1 10 19 Z" fill="#1c263a"/>
+      </svg>
+    </button>
     <button id="btn-hdr-refresh" class="app-hdr-btn hdr-refresh-btn" title="새로고침" aria-label="새로고침" style="margin-right:8px;">↺</button>
     <button class="user-avatar-btn" id="btn-user-avatar" aria-label="계정 메뉴" style="display:none">
       <img id="user-photo" src="" alt="" style="display:none">
@@ -2572,8 +3082,9 @@ body::after {
 </header>
 <!-- ── LOGIN SCREEN ────────────────────────────── -->
 <div id="login-screen">
+  <div class="season-emoji"></div>
   <div class="login-logo">📅</div>
-  <h1 class="login-title">Joyful Calendar</h1>
+  <h1 class="login-title">JOYFUL CALENDAR</h1>
   <p class="login-sub">일정과 할일을<br>어디서나 함께</p>
   <div class="login-quote" id="login-quote-box">
     <div class="login-quote-text" id="login-quote-text"></div>
@@ -3749,8 +4260,18 @@ body::after {
     } else {
       evs.forEach(e => {
         const item = document.createElement('div');
-        item.className = 'todo-item';
-        item.innerHTML = `<div class="todo-check" style="border-color:var(--label-${e.color||'gold'})"></div>${renderEventCardBody(e)}`;
+        item.className = `todo-item${e.done ? ' done' : ''}`;
+        item.innerHTML = `<div class="todo-check" style="${e.done ? '' : `border-color:var(--label-${e.color||'gold'})`}">${e.done ? '✔' : ''}</div>${renderEventCardBody(e)}`;
+        const checkEl = item.querySelector('.todo-check');
+        checkEl.onclick = ev => {
+          ev.stopPropagation();
+          const newDone = !e.done;
+          e.done = newDone;
+          item.classList.toggle('done', newDone);
+          checkEl.textContent = newDone ? '✔' : '';
+          checkEl.style.borderColor = newDone ? '' : `var(--label-${e.color||'gold'})`;
+          db.collection('users').doc(currentUser.uid).collection('events').doc(e.id).update({ done: newDone });
+        };
         item.onclick = () => openEventModal(e);
         list.appendChild(item);
       });
@@ -3863,8 +4384,8 @@ body::after {
       formattedDate = `작성: ${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}.`;
     }
 
-    const answerBtnHtml = p.answered 
-      ? `<div style="flex:1"></div>` 
+    const answerBtnHtml = p.answered
+      ? `<div style="flex:1"></div>`
       : `<button class="btn-answer">응답완료</button>`;
 
     const catColors = {
@@ -3879,11 +4400,14 @@ body::after {
     const cColor = catColors[p.category] || 'var(--surface-3)';
 
     el.innerHTML = `
-      <div style="display:flex; justify-content:space-between">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
         <span class="prayer-cat" style="background:${cColor}; color:#fff">${p.category || '기타'}</span>
-        <button class="todo-del" style="position:static; padding:4px">✕</button>
+        <div style="display:flex; align-items:center; gap:4px;">
+          ${!p.answered ? `<button class="btn-prayer-edit">✏️ 수정</button>` : ''}
+          <button class="todo-del" style="position:static; padding:4px">✕</button>
+        </div>
       </div>
-      <p class="prayer-title">${p.text}</p>
+      <p class="prayer-title">${escapeHtml(p.text)}</p>
       <div class="prayer-footer">
         <span class="prayer-date">${formattedDate}</span>
         ${answerBtnHtml}
@@ -3902,6 +4426,52 @@ body::after {
           answered: true,
           answeredAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+      };
+
+      el.querySelector('.btn-prayer-edit').onclick = ev => {
+        ev.stopPropagation();
+        const titleEl = el.querySelector('.prayer-title');
+        const footerEl = el.querySelector('.prayer-footer');
+        const editBtn = el.querySelector('.btn-prayer-edit');
+        const delBtn = el.querySelector('.todo-del');
+
+        // 편집 UI로 교체
+        editBtn.style.display = 'none';
+        delBtn.style.display = 'none';
+        titleEl.style.display = 'none';
+        footerEl.style.display = 'none';
+
+        const wrap = document.createElement('div');
+        wrap.className = 'prayer-edit-wrap';
+        wrap.innerHTML = `
+          <textarea class="prayer-edit-input" rows="3">${p.text}</textarea>
+          <div class="prayer-edit-actions">
+            <button class="btn-prayer-cancel">취소</button>
+            <button class="btn-prayer-save">저장</button>
+          </div>
+        `;
+        el.appendChild(wrap);
+
+        const textarea = wrap.querySelector('.prayer-edit-input');
+        textarea.focus();
+        textarea.selectionStart = textarea.value.length;
+
+        wrap.querySelector('.btn-prayer-cancel').onclick = ev2 => {
+          ev2.stopPropagation();
+          wrap.remove();
+          titleEl.style.display = '';
+          footerEl.style.display = '';
+          editBtn.style.display = '';
+          delBtn.style.display = '';
+        };
+
+        wrap.querySelector('.btn-prayer-save').onclick = ev2 => {
+          ev2.stopPropagation();
+          const newText = textarea.value.trim();
+          if(!newText) return;
+          db.collection('users').doc(currentUser.uid).collection('prayers').doc(p.id)
+            .update({ text: newText });
+        };
       };
     }
     return el;
@@ -4262,7 +4832,89 @@ body::after {
 
   // ── EVENT HANDLERS ──────────────────────────────
   $('btn-google-login').onclick = signInWithGoogle;
+
+  // 계절 배경 + 장식 적용
+  (function() {
+    const m = new Date().getMonth() + 1;
+    const s = m >= 3 && m <= 5 ? 'spring'
+            : m >= 6 && m <= 8 ? 'summer'
+            : m >= 9 && m <= 11 ? 'autumn'
+            : 'winter';
+    const screen = $('login-screen');
+    screen.classList.add('season-' + s);
+    document.body.classList.add('season-' + s);
+    applySeasonDeco(s, screen);
+  })();
+
+  function applySeasonDeco(season, screen) {
+    // 기존 장식 제거
+    screen.querySelectorAll('.login-particle').forEach(el => el.remove());
+
+    // ── 벚꽃 나무 SVG (봄/여름/가을/겨울 공용 브랜치 구조) ──
+    const configs = {
+      spring: {
+        trunk: '#9B7355', blossom: [
+          ['rgba(255,175,210,0.88)','rgba(255,200,225,0.80)','rgba(255,220,238,0.75)'],
+        ], leaf: null, snowflake: false
+      },
+      summer: {
+        trunk: '#6B8E5A', blossom: null,
+        leaf: ['rgba(100,195,120,0.85)','rgba(130,210,145,0.78)','rgba(160,225,170,0.70)'],
+        snowflake: false
+      },
+      autumn: {
+        trunk: '#8B6040', blossom: null,
+        leaf: ['rgba(220,100,40,0.88)','rgba(240,150,40,0.82)','rgba(200,80,30,0.78)','rgba(255,180,50,0.75)'],
+        snowflake: false
+      },
+      winter: {
+        trunk: '#7A8FAA', blossom: null, leaf: null, snowflake: true
+      }
+    };
+    const cfg = configs[season];
+
+    // ── 떨어지는 파티클 ──
+    const count = season === 'winter' ? 80 : season === 'summer' ? 0 : 70;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'login-particle';
+      const size = season === 'winter' ? (Math.random() * 6 + 4)
+                 : (Math.random() * 9 + 5);
+      const left = Math.random() * 96 + 2;
+      const dur  = Math.random() * 6 + 6;
+      const delay = Math.random() * 10;
+      const drift = (Math.random() - 0.5) * 90;
+
+      let bg, br, anim;
+      if (season === 'spring') {
+        const pinks = ['rgba(255,170,210,0.92)','rgba(255,195,225,0.85)','rgba(255,215,235,0.80)'];
+        bg = pinks[i % 3]; br = '50% 0 50% 0'; anim = 'particleFall';
+      } else if (season === 'autumn') {
+        const leaves = ['rgba(220,95,35,0.90)','rgba(240,145,35,0.85)','rgba(195,75,25,0.88)'];
+        bg = leaves[i % 3]; br = '40% 5% 40% 5%'; anim = 'leafSway';
+      } else {
+        bg = 'rgba(220,235,255,0.88)'; br = '50%'; anim = 'snowFall';
+      }
+
+      p.style.cssText = `
+        width:${size}px; height:${size*(season==='spring'?0.7:1)}px;
+        left:${left}%; top:-20px;
+        border-radius:${br};
+        background:${bg};
+        animation:${anim} ${dur}s ${delay}s linear infinite;
+        --pdrift:${drift}px;
+      `;
+      screen.appendChild(p);
+    }
+  }
   $('btn-hdr-refresh').onclick  = () => location.reload();
+
+  // 헤더 색상 토글
+  if (localStorage.getItem('siteTheme') === 'light') document.body.classList.add('theme-light');
+  $('btn-hdr-theme').onclick = () => {
+    const isLight = document.body.classList.toggle('theme-light');
+    localStorage.setItem('siteTheme', isLight ? 'light' : 'blue');
+  };
   $('btn-user-avatar').onclick  = () => $('user-menu').classList.toggle('hidden');
   $('btn-signout').onclick      = () => auth.signOut();
   $('btn-home').onclick         = () => switchScreen('week');
