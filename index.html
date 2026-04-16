@@ -659,6 +659,57 @@ input, textarea { font-family: inherit; }
   .btn-prayer-cancel { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 4px; background: var(--surface-3); color: var(--text-2); border: 1px solid var(--surface-border); cursor: pointer; }
   .prayer-item.answered .prayer-title { color: var(--text-3); }
 
+  /* ─── BIBLE SCREEN ──────────────────────────────── */
+  #screen-bible { display: flex; flex-direction: column; overflow: hidden; }
+  .bible-header { padding: calc(var(--safe-t) + 20px) 20px 0; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+  .bible-nav-row { display: flex; gap: 8px; align-items: center; }
+  .bible-select { background: var(--surface-1); border: 1px solid var(--surface-border); border-radius: var(--r-sm); padding: 10px 8px; font-size: 14px; color: var(--text-1); outline: none; cursor: pointer; }
+  .bible-select-book { flex: 1; }
+  .bible-select-chapter { flex: 1; }
+  .bible-select-verse { flex: 1; }
+  .bible-chapter-nav { display: flex; align-items: center; gap: 6px; }
+  .bible-ch-btn { width: 30px; height: 38px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--surface-border); font-size: 20px; color: var(--text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .bible-ch-btn:active { background: var(--surface-3); }
+  .bible-font-btns { display: flex; gap: 3px; }
+  .bible-font-btn { height: 38px; padding: 0 8px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--surface-border); font-size: 12px; font-weight: 700; color: var(--text-2); cursor: pointer; white-space: nowrap; }
+  .bible-font-btn:active { background: var(--surface-3); }
+  .bible-progress-label { font-size: 12px; color: var(--text-3); font-weight: 600; display: flex; justify-content: space-between; }
+  .bible-progress-bar-wrap { background: var(--surface-2); border-radius: var(--r-pill); height: 5px; overflow: hidden; }
+  .bible-progress-bar { height: 100%; background: var(--accent); border-radius: var(--r-pill); transition: width 0.4s var(--ease-snap); }
+  .bible-tab-row { display: flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: var(--r-sm); }
+  .bible-tab { flex: 1; padding: 9px; font-size: 14px; font-weight: 600; color: var(--text-3); background: transparent; border: none; border-radius: calc(var(--r-sm) - 2px); cursor: pointer; transition: 150ms; }
+  .bible-tab.active { background: var(--surface-1); color: var(--text-1); box-shadow: 0 4px 14px rgba(23,33,48,0.08); }
+  /* 본문 */
+  .bible-text-wrap { flex: 1; overflow-y: auto; padding: 16px 20px calc(var(--nav-h) + var(--safe-b) + 16px); }
+  .bible-verse-row { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--surface-2); }
+  .bible-verse-row:last-child { border-bottom: none; }
+  .bible-vnum { font-size: 11px; font-weight: 700; color: var(--accent); min-width: 22px; padding-top: 3px; flex-shrink: 0; }
+  .bible-vtext { font-size: var(--bible-font-size, 16px); line-height: 1.8; color: var(--text-1); word-break: keep-all; }
+  .bible-loading { padding: 60px 20px; text-align: center; color: var(--text-3); font-size: 15px; }
+  /* 완료 모달 */
+  .bible-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 800; display: flex; align-items: flex-end; padding-bottom: calc(var(--safe-b) + 12px); }
+  .bible-modal.hidden { display: none; }
+  .bible-modal-box { background: var(--surface-1); border-radius: var(--r-lg) var(--r-lg) var(--r-md) var(--r-md); padding: 24px 20px; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  .bible-modal-title { font-size: 17px; font-weight: 800; color: var(--text-1); text-align: center; }
+  .bible-theme-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bible-theme-chip { padding: 7px 14px; border-radius: var(--r-pill); font-size: 13px; font-weight: 700; border: 1.5px solid var(--surface-border); background: var(--surface-1); color: var(--text-3); cursor: pointer; transition: 120ms; }
+  .bible-theme-chip.selected { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+  .bible-input-note { width: 100%; background: var(--surface-2); border: 1px solid var(--surface-border); border-radius: var(--r-sm); padding: 12px 14px; font-size: 15px; color: var(--text-1); outline: none; resize: none; }
+  .bible-modal-actions { display: flex; gap: 8px; }
+  .bible-modal-cancel { flex: 1; padding: 13px; border-radius: var(--r-sm); background: var(--surface-2); color: var(--text-2); font-size: 15px; font-weight: 600; border: none; cursor: pointer; }
+  .bible-modal-save { flex: 2; padding: 13px; border-radius: var(--r-sm); background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; border: none; cursor: pointer; }
+  /* 기록 */
+  .bible-list-wrap { flex: 1; overflow-y: auto; padding: 16px 20px 80px; }
+  .bible-item { background: var(--surface-1); border: 1px solid var(--surface-border); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .bible-item-top { display: flex; justify-content: space-between; align-items: center; }
+  .bible-book-badge { font-size: 15px; font-weight: 800; color: var(--text-1); }
+  .bible-book-badge span { font-size: 13px; font-weight: 600; color: var(--text-2); margin-left: 4px; }
+  .bible-theme-badge { padding: 3px 9px; border-radius: var(--r-pill); font-size: 11px; font-weight: 700; }
+  .bible-note-text { font-size: 14px; line-height: 1.55; color: var(--text-2); word-break: break-all; margin: 0; }
+  .bible-item-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--surface-border); padding-top: 8px; }
+  .bible-date { font-size: 12px; color: var(--text-3); }
+  .bible-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; margin-left: 2px; vertical-align: middle; }
+
   /* ─── GUIDE SCREEN ─────────────────────────────── */
   .guide-scroll {
     flex: 0 0 auto;
@@ -1999,7 +2050,8 @@ body.login-locked #pc-sidebar {
 #screen-day,
 #screen-todo,
 #screen-routine,
-#screen-prayer {
+#screen-prayer,
+#screen-bible {
   background: transparent;
 }
 .header {
@@ -2552,6 +2604,9 @@ body::after {
 #screen-prayer {
   padding: 0 14px 14px;
 }
+#screen-bible {
+  padding: 0;
+}
 #screen-month {
   padding-bottom: calc(var(--nav-h) + var(--safe-b) + 18px);
 }
@@ -2976,12 +3031,16 @@ body::after {
   #screen-todo,
   #screen-routine,
   #screen-prayer,
+  #screen-bible,
   #screen-day {
     left: 116px;
     right: 0;
     top: 0;
     bottom: 0;
     padding: 0 10px 10px;
+  }
+  .bible-header {
+    padding: 16px 20px 0 !important;
   }
   .nav-tab {
     flex: 0 0 auto;
@@ -3228,6 +3287,51 @@ body::after {
     <div class="prayer-list-wrap" id="prayer-list-wrap"></div>
   </div>
 
+  <!-- bible screen -->
+  <div id="screen-bible" class="screen hidden">
+    <header class="bible-header">
+      <div class="bible-nav-row">
+        <select id="bible-book" class="bible-select bible-select-book"></select>
+        <div class="bible-font-btns">
+          <button id="btn-font-down" class="bible-font-btn">A-</button>
+          <button id="btn-font-up" class="bible-font-btn">A+</button>
+        </div>
+      </div>
+      <div class="bible-chapter-nav">
+        <button id="btn-bible-prev" class="bible-ch-btn">‹</button>
+        <select id="bible-chapter" class="bible-select bible-select-chapter"></select>
+        <select id="bible-verse-sel" class="bible-select bible-select-verse"></select>
+        <button id="btn-bible-next" class="bible-ch-btn">›</button>
+      </div>
+      <div class="bible-progress-label">
+        <span id="bible-progress-text">0권 읽음 / 66권</span>
+        <span id="bible-progress-pct">0%</span>
+      </div>
+      <div class="bible-progress-bar-wrap">
+        <div class="bible-progress-bar" id="bible-progress-bar" style="width:0%"></div>
+      </div>
+    </header>
+    <div id="bible-text-view" class="bible-text-wrap"></div>
+    <!-- 읽기 완료 모달 -->
+    <div id="bible-done-modal" class="bible-modal hidden">
+      <div class="bible-modal-box">
+        <div class="bible-modal-title" id="bible-modal-passage"></div>
+        <div class="bible-theme-row" id="bible-theme-row">
+          <button class="bible-theme-chip" data-theme="은혜">은혜</button>
+          <button class="bible-theme-chip" data-theme="도전">도전</button>
+          <button class="bible-theme-chip" data-theme="위로">위로</button>
+          <button class="bible-theme-chip" data-theme="감사">감사</button>
+          <button class="bible-theme-chip" data-theme="회개">회개</button>
+        </div>
+        <textarea id="bible-note" class="bible-input-note" placeholder="묵상 노트 (선택)" rows="3"></textarea>
+        <div class="bible-modal-actions">
+          <button id="btn-bible-modal-cancel" class="bible-modal-cancel">취소</button>
+          <button id="btn-bible-modal-save" class="bible-modal-save">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- guide screen -->
   <div id="screen-guide" class="screen hidden">
     <header class="header guide-header">
@@ -3458,17 +3562,15 @@ body::after {
       </span>
       <span class="nav-tab-label">할일</span>
     </button>
-    <button class="nav-tab" id="tab-routine">
+    <button class="nav-tab" id="tab-bible">
       <span class="nav-tab-icon">
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M7 7h8a4 4 0 0 1 0 8H9"></path>
-          <path d="M7 7l2.5-2.5"></path>
-          <path d="M7 7l2.5 2.5"></path>
-          <path d="M17 17l-2.5 2.5"></path>
-          <path d="M17 17l-2.5-2.5"></path>
+          <path d="M4 4h7a2 2 0 0 1 2 2v13H6a2 2 0 0 1-2-2z"></path>
+          <path d="M20 4h-7a2 2 0 0 0-2 2v13h7a2 2 0 0 0 2-2z"></path>
+          <path d="M12 6v13"></path>
         </svg>
       </span>
-      <span class="nav-tab-label">루틴</span>
+      <span class="nav-tab-label">성경</span>
     </button>
     <div class="nav-add">
       <button id="btn-global-add" class="nav-add-circle" aria-label="추가">＋</button>
@@ -3719,6 +3821,41 @@ body::after {
   const PrayerState = { prayers: [] };
   const PrayerCategory = '개인';
   let PrayerTab = 'active'; // 'active' or 'done'
+  const BibleState = { readings: [], data: null };
+  let BibleView = 'read'; // 'read' or 'history'
+  let BibleSelectedTheme = '';
+  let BibleFontSize = 16; // px
+  const BIBLE_BOOKS = [
+    { name:'창세기', chapters:50 }, { name:'출애굽기', chapters:40 }, { name:'레위기', chapters:27 },
+    { name:'민수기', chapters:36 }, { name:'신명기', chapters:34 }, { name:'여호수아', chapters:24 },
+    { name:'사사기', chapters:21 }, { name:'룻기', chapters:4 }, { name:'사무엘상', chapters:31 },
+    { name:'사무엘하', chapters:24 }, { name:'열왕기상', chapters:22 }, { name:'열왕기하', chapters:25 },
+    { name:'역대상', chapters:29 }, { name:'역대하', chapters:36 }, { name:'에스라', chapters:10 },
+    { name:'느헤미야', chapters:13 }, { name:'에스더', chapters:10 }, { name:'욥기', chapters:42 },
+    { name:'시편', chapters:150 }, { name:'잠언', chapters:31 }, { name:'전도서', chapters:12 },
+    { name:'아가', chapters:8 }, { name:'이사야', chapters:66 }, { name:'예레미야', chapters:52 },
+    { name:'예레미야애가', chapters:5 }, { name:'에스겔', chapters:48 }, { name:'다니엘', chapters:12 },
+    { name:'호세아', chapters:14 }, { name:'요엘', chapters:3 }, { name:'아모스', chapters:9 },
+    { name:'오바댜', chapters:1 }, { name:'요나', chapters:4 }, { name:'미가', chapters:7 },
+    { name:'나훔', chapters:3 }, { name:'하박국', chapters:3 }, { name:'스바냐', chapters:3 },
+    { name:'학개', chapters:2 }, { name:'스가랴', chapters:14 }, { name:'말라기', chapters:4 },
+    { name:'마태복음', chapters:28 }, { name:'마가복음', chapters:16 }, { name:'누가복음', chapters:24 },
+    { name:'요한복음', chapters:21 }, { name:'사도행전', chapters:28 }, { name:'로마서', chapters:16 },
+    { name:'고린도전서', chapters:16 }, { name:'고린도후서', chapters:13 }, { name:'갈라디아서', chapters:6 },
+    { name:'에베소서', chapters:6 }, { name:'빌립보서', chapters:4 }, { name:'골로새서', chapters:4 },
+    { name:'데살로니가전서', chapters:5 }, { name:'데살로니가후서', chapters:3 }, { name:'디모데전서', chapters:6 },
+    { name:'디모데후서', chapters:4 }, { name:'디도서', chapters:3 }, { name:'빌레몬서', chapters:1 },
+    { name:'히브리서', chapters:13 }, { name:'야고보서', chapters:5 }, { name:'베드로전서', chapters:5 },
+    { name:'베드로후서', chapters:3 }, { name:'요한일서', chapters:5 }, { name:'요한이서', chapters:1 },
+    { name:'요한삼서', chapters:1 }, { name:'유다서', chapters:1 }, { name:'요한계시록', chapters:22 }
+  ];
+  const BIBLE_THEME_COLORS = {
+    '은혜': { bg:'rgba(88,112,218,0.15)', color:'var(--label-indigo)' },
+    '도전': { bg:'rgba(224,92,106,0.15)', color:'var(--label-rose)' },
+    '위로': { bg:'rgba(58,173,124,0.15)', color:'var(--label-jade)' },
+    '감사': { bg:'rgba(214,161,31,0.18)', color:'var(--label-gold)' },
+    '회개': { bg:'rgba(217,132,32,0.15)', color:'var(--label-amber)' }
+  };
   // ── QUOTES ──────────────────────────────────────
   const QUOTES = [
     { text: "우리에게 우리 날 계수함을 가르치사 지혜로운 마음을 얻게 하소서", author: "시편 90:12" },
@@ -4088,6 +4225,13 @@ body::after {
         RoutineState.routines = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => (a.priority||5) - (b.priority||5));
         if(State.view === 'routine') renderRoutine();
       });
+    db.collection('users').doc(uid).collection('bible_readings')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(snap => {
+        BibleState.readings = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if(State.view === 'bible') renderBible();
+        else renderCurrentView();
+      });
   }
 
   // ── RENDER ──────────────────────────────────────
@@ -4098,6 +4242,7 @@ body::after {
     else if(State.view === 'todo')  renderTodo();
     else if(State.view === 'routine') renderRoutine();
     else if(State.view === 'prayer')  renderPrayer();
+    else if(State.view === 'bible')   renderBible();
     if(window.innerWidth >= 900) renderPC();
   }
 
@@ -4115,9 +4260,11 @@ body::after {
       const iso = toISO(d);
       const col = document.createElement('div');
       col.className = `week-day-col ${iso===State.selected?'selected':''} ${iso===toISO(new Date())?'today':''}`;
+      const hasBible = BibleState.readings.some(r => r.readAt === iso);
       col.innerHTML = `
         <div class="week-dow">${['일','월','화','수','목','금','토'][d.getDay()]}</div>
         <div class="week-date-num">${d.getDate()}</div>
+        ${hasBible ? '<span class="bible-dot"></span>' : ''}
       `;
       col.onclick = () => {
         State.selected = iso;
@@ -4719,7 +4866,7 @@ body::after {
   // ── SCREEN SWITCH ────────────────────────────────
   function switchScreen(id) {
     if(id !== 'guide') State.lastPrimaryView = id;
-    ['week','month','todo','day','routine','prayer','guide'].forEach(s => {
+    ['week','month','todo','day','routine','prayer','bible','guide'].forEach(s => {
       const el = $('screen-' + s);
       if(!el) return;
       if(s === id) { el.classList.remove('hidden'); if(s==='day') el.classList.add('visible'); }
@@ -4732,7 +4879,7 @@ body::after {
   }
 
   function updateNav() {
-    ['week','todo','routine','prayer','day','month'].forEach(t => {
+    ['week','todo','routine','prayer','day','month','bible'].forEach(t => {
       const el = $('tab-' + t);
       if(el) {
         if(t === State.view) el.classList.add('active');
@@ -4802,6 +4949,222 @@ body::after {
       answered: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }).finally(() => { setTimeout(() => { _prayerAdding = false; }, 300); });
+  }
+
+  // ── BIBLE ────────────────────────────────────────
+  function initBibleBookSelect() {
+    const bookSel = $('bible-book');
+    if(!bookSel || bookSel.options.length > 1) return;
+    BIBLE_BOOKS.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.name;
+      opt.textContent = b.name;
+      bookSel.appendChild(opt);
+    });
+    updateBibleChapterSelect();
+  }
+
+  function updateBibleChapterSelect() {
+    const bookSel = $('bible-book');
+    const chapSel = $('bible-chapter');
+    if(!bookSel || !chapSel) return;
+    const book = BIBLE_BOOKS.find(b => b.name === bookSel.value);
+    const count = book ? book.chapters : 1;
+    const cur = parseInt(chapSel.value) || 1;
+    chapSel.innerHTML = '';
+    for(let i = 1; i <= count; i++) {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = i + '장';
+      if(i === cur) opt.selected = true;
+      chapSel.appendChild(opt);
+    }
+  }
+
+  function updateBibleVerseSelect(verseCount) {
+    const verseSel = $('bible-verse-sel');
+    if(!verseSel) return;
+    verseSel.innerHTML = '<option value="0">절 이동</option>';
+    for(let i = 1; i <= verseCount; i++) {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = i + '절';
+      verseSel.appendChild(opt);
+    }
+    verseSel.value = '0';
+  }
+
+  function setBibleFontSize(size) {
+    BibleFontSize = Math.min(24, Math.max(12, size));
+    const wrap = $('bible-text-view');
+    if(wrap) wrap.style.setProperty('--bible-font-size', BibleFontSize + 'px');
+  }
+
+  function loadBibleData() {
+    if(BibleState.data) return Promise.resolve(BibleState.data);
+    const textView = $('bible-text-view');
+    if(textView) textView.innerHTML = '<div class="bible-loading">성경 데이터 불러오는 중...</div>';
+    return fetch('/bible.json')
+      .then(r => r.text())
+      .then(text => {
+        // BOM 제거 후 파싱
+        const clean = text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
+        BibleState.data = JSON.parse(clean);
+        return BibleState.data;
+      });
+  }
+
+  function renderBibleText() {
+    const bookSel = $('bible-book');
+    const chapSel = $('bible-chapter');
+    const textView = $('bible-text-view');
+    if(!bookSel || !chapSel || !textView) return;
+    const bookName = bookSel.value;
+    const chapNum  = parseInt(chapSel.value) - 1; // 0-based index
+
+    loadBibleData().then(data => {
+      const bookData = data.find(b => {
+        // bible.json id(gn,ex...) → 책 이름 매핑은 인덱스로
+        return false;
+      });
+      // 인덱스 기반으로 접근
+      const bookIdx = BIBLE_BOOKS.findIndex(b => b.name === bookName);
+      if(bookIdx < 0 || !data[bookIdx]) {
+        textView.innerHTML = '<div class="bible-loading">본문을 찾을 수 없습니다.</div>';
+        return;
+      }
+      const chapters = data[bookIdx].chapters;
+      if(!chapters[chapNum]) {
+        textView.innerHTML = '<div class="bible-loading">장을 찾을 수 없습니다.</div>';
+        return;
+      }
+      const verses = chapters[chapNum];
+      textView.innerHTML = '';
+      setBibleFontSize(BibleFontSize);
+      updateBibleVerseSelect(verses.length);
+      verses.forEach((v, i) => {
+        const row = document.createElement('div');
+        row.className = 'bible-verse-row';
+        row.dataset.verse = i + 1;
+        row.innerHTML = `<span class="bible-vnum">${i+1}</span><span class="bible-vtext">${escapeHtml(v)}</span>`;
+        textView.appendChild(row);
+      });
+      textView.scrollTop = 0;
+    }).catch(() => {
+      textView.innerHTML = '<div class="bible-loading">성경 데이터 로드 실패.</div>';
+    });
+  }
+
+  function renderBible() {
+    initBibleBookSelect();
+    updateBibleProgress();
+
+    const textView    = $('bible-text-view');
+    const historyView = $('bible-history-view');
+
+    if(BibleView === 'read') {
+      if(textView)    textView.classList.remove('hidden');
+      if(historyView) historyView.classList.add('hidden');
+      renderBibleText();
+    } else {
+      if(textView)    textView.classList.add('hidden');
+      if(historyView) historyView.classList.remove('hidden');
+      renderBibleHistory();
+    }
+  }
+
+  function updateBibleProgress() {
+    const readBooks = new Set(BibleState.readings.map(r => r.book));
+    const total = 66;
+    const count = readBooks.size;
+    const pct = Math.round(count / total * 100);
+    const progEl = $('bible-progress-bar');
+    const textEl = $('bible-progress-text');
+    const pctEl  = $('bible-progress-pct');
+    if(progEl) progEl.style.width = pct + '%';
+    if(textEl) textEl.textContent = `${count}권 읽음 / ${total}권`;
+    if(pctEl)  pctEl.textContent  = `${pct}%`;
+  }
+
+  function renderBibleHistory() {
+    const wrap = $('bible-history-view');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    const list = BibleState.readings;
+    if(!list.length) {
+      wrap.innerHTML = '<div class="todo-empty">읽기 기록이 없습니다.</div>';
+      return;
+    }
+    list.forEach(r => wrap.appendChild(createBibleEl(r)));
+  }
+
+  function createBibleEl(r) {
+    const el = document.createElement('div');
+    el.className = 'bible-item';
+    const themeStyle = r.theme && BIBLE_THEME_COLORS[r.theme]
+      ? `background:${BIBLE_THEME_COLORS[r.theme].bg}; color:${BIBLE_THEME_COLORS[r.theme].color}`
+      : 'background:var(--surface-2); color:var(--text-3)';
+    const themeHtml = r.theme
+      ? `<span class="bible-theme-badge" style="${themeStyle}">${r.theme}</span>`
+      : '';
+    let dateStr = r.readAt || '';
+    if(!dateStr && r.createdAt) {
+      const d = r.createdAt.toDate ? r.createdAt.toDate() : new Date(r.createdAt);
+      dateStr = `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`;
+    }
+    el.innerHTML = `
+      <div class="bible-item-top">
+        <div class="bible-book-badge">${escapeHtml(r.book)}<span>${r.chapter}장</span></div>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${themeHtml}
+          <button class="todo-del" style="position:static;padding:4px">✕</button>
+        </div>
+      </div>
+      ${r.note ? `<p class="bible-note-text">${escapeHtml(r.note)}</p>` : ''}
+      <div class="bible-item-footer">
+        <span class="bible-date">${dateStr}</span>
+      </div>
+    `;
+    el.querySelector('.todo-del').onclick = ev => {
+      ev.stopPropagation();
+      db.collection('users').doc(currentUser.uid).collection('bible_readings').doc(r.id).delete();
+    };
+    return el;
+  }
+
+  function openBibleDoneModal() {
+    const bookSel = $('bible-book');
+    const chapSel = $('bible-chapter');
+    const modal   = $('bible-done-modal');
+    const passEl  = $('bible-modal-passage');
+    if(!modal) return;
+    if(passEl) passEl.textContent = `${bookSel.value} ${chapSel.value}장 읽기 완료!`;
+    BibleSelectedTheme = '';
+    document.querySelectorAll('.bible-theme-chip').forEach(c => c.classList.remove('selected'));
+    const noteEl = $('bible-note');
+    if(noteEl) noteEl.value = '';
+    modal.classList.remove('hidden');
+  }
+
+  var _bibleAdding = false;
+  function saveBibleReading() {
+    if(_bibleAdding || !currentUser) return;
+    const bookSel = $('bible-book');
+    const chapSel = $('bible-chapter');
+    const noteEl  = $('bible-note');
+    const book    = bookSel ? bookSel.value : '';
+    const chapter = chapSel ? parseInt(chapSel.value, 10) : 1;
+    const note    = noteEl  ? noteEl.value.trim() : '';
+    const theme   = BibleSelectedTheme;
+    if(!book) return;
+    _bibleAdding = true;
+    const today = toISO(new Date());
+    db.collection('users').doc(currentUser.uid).collection('bible_readings').add({
+      book, chapter, note, theme,
+      readAt: today,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      $('bible-done-modal').classList.add('hidden');
+      showToast(`${book} ${chapter}장 읽기 완료!`);
+    }).finally(() => { setTimeout(() => { _bibleAdding = false; }, 300); });
   }
 
   // ── SWIPE GESTURES ──────────────────────────────
@@ -5019,9 +5382,10 @@ body::after {
   $('tab-week').onclick    = () => switchScreen('week');
   $('tab-month').onclick   = () => switchScreen('month');
   $('tab-todo').onclick    = () => switchScreen('todo');
-  $('tab-routine').onclick = () => switchScreen('routine');
+  if($('tab-routine')) $('tab-routine').onclick = () => switchScreen('routine');
   $('tab-prayer').onclick  = () => switchScreen('prayer');
   $('tab-day').onclick     = () => switchScreen('day');
+  $('tab-bible').onclick   = () => switchScreen('bible');
 
   // Todo
   $('btn-todo-add').onclick = addTodo;
@@ -5059,6 +5423,50 @@ body::after {
     $('tab-pr-active').classList.remove('active');
     renderCurrentView();
   };
+
+  // Bible
+  $('bible-book').addEventListener('change', () => { updateBibleChapterSelect(); renderBibleText(); });
+  $('bible-chapter').addEventListener('change', () => renderBibleText());
+  $('bible-verse-sel').addEventListener('change', () => {
+    const verseSel = $('bible-verse-sel');
+    const verseNum = parseInt(verseSel.value);
+    if(!verseNum) return;
+    const textView = $('bible-text-view');
+    const target = textView && textView.querySelector(`.bible-verse-row[data-verse="${verseNum}"]`);
+    if(target && textView) {
+      textView.scrollTop = target.offsetTop - textView.offsetTop;
+    }
+    setTimeout(() => { verseSel.value = '0'; }, 400);
+  });
+  $('btn-bible-prev').onclick = () => {
+    const chapSel = $('bible-chapter');
+    if(!chapSel || chapSel.selectedIndex <= 0) return;
+    chapSel.selectedIndex--;
+    renderBibleText();
+  };
+  $('btn-bible-next').onclick = () => {
+    const chapSel = $('bible-chapter');
+    if(!chapSel || chapSel.selectedIndex >= chapSel.options.length - 1) return;
+    chapSel.selectedIndex++;
+    renderBibleText();
+  };
+  $('btn-font-up').onclick   = () => { setBibleFontSize(BibleFontSize + 2); };
+  $('btn-font-down').onclick = () => { setBibleFontSize(BibleFontSize - 2); };
+  $('btn-bible-modal-save').onclick = saveBibleReading;
+  $('btn-bible-modal-cancel').onclick = () => $('bible-done-modal').classList.add('hidden');
+  document.querySelectorAll('.bible-theme-chip').forEach(chip => {
+    chip.onclick = () => {
+      const theme = chip.dataset.theme;
+      if(BibleSelectedTheme === theme) {
+        BibleSelectedTheme = '';
+        chip.classList.remove('selected');
+      } else {
+        BibleSelectedTheme = theme;
+        document.querySelectorAll('.bible-theme-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      }
+    };
+  });
 
   // Click outside user menu
   window.addEventListener('click', e => {
