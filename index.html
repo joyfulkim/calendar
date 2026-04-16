@@ -1413,12 +1413,16 @@ body.theme-light #app-header {
 }
 body.theme-light .app-hdr-btn,
 body.theme-light .hdr-refresh-btn,
-body.theme-light .hdr-theme-btn,
-body.theme-light .sb-nav-btn {
+body.theme-light .hdr-theme-btn {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(180,197,228,0.18);
   box-shadow: 0 10px 24px rgba(8,15,31,0.18);
   color: rgba(244,247,255,0.92);
+}
+body.theme-light .sb-nav-btn {
+  background: rgba(60,80,130,0.10);
+  border: 1px solid rgba(60,80,130,0.18);
+  color: #2d3a5e;
 }
 body.theme-light .header-back {
   background: rgba(255,255,255,0.82);
@@ -1560,7 +1564,7 @@ body.theme-light .nav-add-circle {
   background: var(--accent);
   box-shadow: 0 4px 14px var(--accent-glow);
 }
-body.theme-light .sb-cal-cell { background: transparent; border: 1px solid transparent; }
+body.theme-light .sb-cal-cell { background: rgba(60,80,130,0.04); border: 1px solid rgba(60,80,130,0.10); }
 body.theme-light .sb-cal-cell.selected {
   background: rgba(214,161,31,0.12);
   outline: 1px solid rgba(214,161,31,0.4);
@@ -3212,6 +3216,7 @@ body::after {
           <option value="행사">행사</option>
           <option value="기타">기타</option>
         </select>
+        <input type="text" id="prayer-custom-cat" class="prayer-input" placeholder="카테고리 직접 입력..." style="display:none; max-width:110px; min-width:80px; flex:none;">
         <input type="text" id="prayer-input" class="prayer-input" placeholder="기도제목 입력..." enterkeyhint="done">
         <button id="btn-prayer-add" class="todo-add-btn">+</button>
       </div>
@@ -4031,33 +4036,30 @@ body::after {
     const persist = $('chk-persist').checked
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION;
-    
-    showToast('팝업으로 로그인을 시도합니다...');
-    auth.setPersistence(persist);
 
-    // Safari 및 모바일 포함 PWA 환경을 위해 1차적으로 팝업 시도
-    auth.signInWithPopup(provider)
-      .then(result => { if(result.user) handleLoggedIn(result.user); })
-      .catch(err => {
-        console.warn('Popup failed:', err.code);
-        if(err.code === 'auth/unauthorized-domain') {
-          const host = window.location.hostname;
-          alert(
-            '현재 주소(' + host + ')가 Firebase Google 로그인 허용 도메인에 등록되어 있지 않습니다.\n\n' +
-            'Firebase Console > Authentication > Settings > Authorized domains 에 "' + host + '"를 추가해 주세요.\n' +
-            '이 프로젝트가 2025년 4월 28일 이후 생성됐다면 "localhost"도 기본 등록되지 않으니 함께 확인해 주세요.'
-          );
-        } else if(err.code === 'auth/popup-blocked') {
-          // 팝업이 차단된 경우, iOS Safari는 Redirect 도 차단(세션 유실)되는 경우가 많음
-          const confirmRedirect = confirm('팝업 창이 차단되었습니다. 사파리 설정에서 팝업 차단을 해제하시거나, 리디렉션 모드로 로그인하시겠습니까?\n\n(참고: 아이폰은 사파리 "크로스 사이트 추적 방지"를 꺼야 리디렉션 로그인이 정상 동작합니다.)');
-          if(confirmRedirect) {
-            auth.signInWithRedirect(provider);
-          }
-        } else {
-          // 기타 에러 시 최후의 수단으로 리디렉션 폴백
-          auth.signInWithRedirect(provider);
-        }
-      });
+    auth.setPersistence(persist).then(() => {
+      // 데스크탑 일반 브라우저: 팝업 시도 → 차단 시 리디렉션
+      const isDesktop = window.innerWidth >= 900 && !navigator.standalone && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if(isDesktop) {
+        auth.signInWithPopup(provider)
+          .then(result => { if(result.user) handleLoggedIn(result.user); })
+          .catch(err => {
+            console.warn('Popup failed:', err.code);
+            if(err.code === 'auth/unauthorized-domain') {
+              const host = window.location.hostname;
+              alert('현재 주소(' + host + ')가 Firebase 허용 도메인에 없습니다.\nFirebase Console > Authentication > Authorized domains 에 추가해 주세요.');
+            } else {
+              // 팝업 차단 등 → 리디렉션으로 폴백
+              auth.signInWithRedirect(provider);
+            }
+          });
+      } else {
+        // 모바일·PWA: 팝업 대신 리디렉션으로 바로 진행
+        auth.signInWithRedirect(provider);
+      }
+    }).catch(err => {
+      showToast('로그인 오류: ' + err.message);
+    });
   }
 
   // ── LISTENERS ───────────────────────────────────
@@ -4117,7 +4119,17 @@ body::after {
         <div class="week-dow">${['일','월','화','수','목','금','토'][d.getDay()]}</div>
         <div class="week-date-num">${d.getDate()}</div>
       `;
-      col.onclick = () => { State.selected = iso; renderCurrentView(); };
+      col.onclick = () => {
+        State.selected = iso;
+        renderCurrentView();
+        requestAnimationFrame(() => {
+          const wrapEl = $('week-events-wrap');
+          const target = wrapEl && wrapEl.querySelector(`.week-list-day-hdr[data-date="${iso}"]`);
+          if(target && wrapEl) {
+            wrapEl.scrollTo({ top: target.offsetTop - wrapEl.offsetTop, behavior: 'smooth' });
+          }
+        });
+      };
       strip.appendChild(col);
     }
     renderWeekEvents();
@@ -4128,6 +4140,7 @@ body::after {
 
     const hdr = document.createElement('div');
     hdr.className = `week-list-day-hdr ${iso===toISO(new Date())?'is-today':''} ${d.getDay()===0?'is-sun':''} ${d.getDay()===6?'is-sat':''}`;
+    hdr.dataset.date = iso;
     hdr.innerHTML = `<span class="wldh-num">${d.getDate()}</span><span class="wldh-dow">${['일','월','화','수','목','금','토'][d.getDay()]}</span>`;
     if(iso === toISO(new Date())) hdr.innerHTML += `<span class="wldh-today-badge">오늘</span>`;
     hdr.onclick = () => { State.selected = iso; switchScreen('day'); };
@@ -4441,9 +4454,16 @@ body::after {
         titleEl.style.display = 'none';
         footerEl.style.display = 'none';
 
+        const CATS = ['개인','교회','가족','친구','동역자','행사','기타'];
+        const isCustomCat = !CATS.includes(p.category);
+        const selectVal = isCustomCat ? '기타' : (p.category || '기타');
+        const catOptions = CATS.map(c => `<option value="${c}"${selectVal===c?' selected':''}>${c}</option>`).join('');
+
         const wrap = document.createElement('div');
         wrap.className = 'prayer-edit-wrap';
         wrap.innerHTML = `
+          <select class="prayer-edit-cat-select" style="width:100%;font-size:14px;padding:8px 10px;border-radius:6px;border:1px solid var(--accent);background:var(--surface-1);color:var(--text-1);outline:none;">${catOptions}</select>
+          <input type="text" class="prayer-edit-custom-cat prayer-edit-input" placeholder="카테고리 직접 입력..." value="${isCustomCat ? escapeHtml(p.category) : ''}" style="display:${isCustomCat?'block':'none'};">
           <textarea class="prayer-edit-input" rows="3">${p.text}</textarea>
           <div class="prayer-edit-actions">
             <button class="btn-prayer-cancel">취소</button>
@@ -4452,7 +4472,13 @@ body::after {
         `;
         el.appendChild(wrap);
 
-        const textarea = wrap.querySelector('.prayer-edit-input');
+        const catSelect = wrap.querySelector('.prayer-edit-cat-select');
+        const customCatInput = wrap.querySelector('.prayer-edit-custom-cat');
+        catSelect.onchange = () => {
+          customCatInput.style.display = catSelect.value === '기타' ? 'block' : 'none';
+        };
+
+        const textarea = wrap.querySelector('textarea.prayer-edit-input');
         textarea.focus();
         textarea.selectionStart = textarea.value.length;
 
@@ -4469,8 +4495,12 @@ body::after {
           ev2.stopPropagation();
           const newText = textarea.value.trim();
           if(!newText) return;
+          let newCat = catSelect.value;
+          if(newCat === '기타' && customCatInput.value.trim()) {
+            newCat = customCatInput.value.trim();
+          }
           db.collection('users').doc(currentUser.uid).collection('prayers').doc(p.id)
-            .update({ text: newText });
+            .update({ text: newText, category: newCat });
         };
       };
     }
@@ -4756,14 +4786,19 @@ body::after {
     if(_prayerAdding) return;
     const input = $('prayer-input');
     const cat = $('prayer-category');
+    const customCat = $('prayer-custom-cat');
     if(!input || !currentUser) return;
     const text = input.value.trim();
     if(!text) return;
+    let category = cat ? cat.value : '기타';
+    if(category === '기타' && customCat && customCat.value.trim()) {
+      category = customCat.value.trim();
+    }
     _prayerAdding = true;
     setTimeout(() => { if(input) input.value = ''; }, 10);
     db.collection('users').doc(currentUser.uid).collection('prayers').add({
       text,
-      category: cat ? cat.value : '기타',
+      category,
       answered: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }).finally(() => { setTimeout(() => { _prayerAdding = false; }, 300); });
@@ -5007,6 +5042,10 @@ body::after {
   $('prayer-input').addEventListener('keydown', e => {
     if(e.isComposing || e.keyCode === 229) return;
     if(e.key === 'Enter') { e.preventDefault(); addPrayer(); }
+  });
+  $('prayer-category').addEventListener('change', () => {
+    const customCat = $('prayer-custom-cat');
+    if(customCat) customCat.style.display = $('prayer-category').value === '기타' ? '' : 'none';
   });
   $('tab-pr-active').onclick = () => {
     PrayerTab = 'active';
